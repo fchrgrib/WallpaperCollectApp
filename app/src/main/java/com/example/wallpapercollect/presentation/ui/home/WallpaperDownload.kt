@@ -1,6 +1,7 @@
 package com.example.wallpapercollect.presentation.ui.home
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -104,7 +105,7 @@ fun downloadBody(
         ) {
 
             Button(
-                onClick = { onClickDownload },
+                onClick = { onClickDownload  },
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -138,7 +139,7 @@ fun downloadBody(
 @Composable
 fun prevDownloadBody() {
     downloadBody(
-        {},
-        {}
+        { Log.d("download-button", "clicked")},
+        {Log.d("favourite-button", "clicked")}
     )
 }
