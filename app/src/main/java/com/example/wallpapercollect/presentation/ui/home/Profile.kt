@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -154,6 +156,7 @@ fun topPartOfProfile(
     onClickCameraIcon: () -> Unit,
     onClickEdit : () -> Unit
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
     Box {
         Column {
             Box(
@@ -199,7 +202,11 @@ fun topPartOfProfile(
                         tint = Color.Unspecified,
                         modifier = Modifier
                             .offset(x = 78.dp, y = 78.dp)
-                            .clickable { onClickCameraIcon }
+                            .clickable(
+                                indication = null,
+                                onClick = {onClickCameraIcon},
+                                interactionSource = interactionSource
+                            )
                     )
                 }
                 Spacer(modifier = Modifier.padding(top = 12.dp))
@@ -216,6 +223,11 @@ fun topPartOfProfile(
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .clickable { onClickEdit }
+                            .clickable(
+                                interactionSource = interactionSource,
+                                onClick = {onClickEdit},
+                                indication = null
+                            )
                     )
                 }
             }
