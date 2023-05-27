@@ -18,7 +18,7 @@ interface WallpaperCollectAPI {
     @POST(ApiEndPoints.REGISTER_EMAIL_DEFAULT)
     suspend fun userRegister(
         @Body user: UserRegister
-    ): Unit
+    ): Status
 
     @GET(ApiEndPoints.REGISTER_GOOGLE_SESSION)
     suspend fun userGoogleRegister() : Unit
@@ -29,7 +29,7 @@ interface WallpaperCollectAPI {
     @POST(ApiEndPoints.LOGIN_EMAIL_DEFAULT)
     suspend fun userLogin(
         @Body user: UserLogIn
-    ): Unit
+    ): Status
 
     @GET(ApiEndPoints.LOGIN_GOOGLE_SESSION)
     suspend fun userGoogleLogin() : Unit
@@ -70,12 +70,12 @@ interface WallpaperCollectAPI {
 
     /**IMAGES COLLECTIONS**/
     @GET("images/{id}")
-    suspend fun getImages(
+    suspend fun getImage(
         @Path("id") imageId:String
     ) : Unit
 
     @DELETE("images/{id}/delete")
-    suspend fun deleteImages(
+    suspend fun deleteImage(
         @Path("id") imageId:String
     ) : Unit
 

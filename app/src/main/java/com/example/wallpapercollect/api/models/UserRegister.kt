@@ -12,7 +12,5 @@ data class UserRegister(
     @Json(name = "email")
     val email:String,
     @Json(name = "phone_number")
-    val phoneNumber:Int,
-    @Json(name = "description")
-    val description:String
+    val phoneNumber:String
 )

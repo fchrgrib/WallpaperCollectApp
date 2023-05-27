@@ -4,9 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class UserLogIn(
-    @Json(name = "email")
-    val userName:String,
-    @Json(name = "password")
-    val password:String
-)
+data class ImagesCollections(
+    @Json(name = "wallpaper_collection")
+    val imageUrl: ArrayList<String>,
+    )
