@@ -43,7 +43,7 @@ class WallpaperCollectRepoImpl @Inject constructor(
         return wallpaperCollectAPI.wallpaperCollection()
     }
 
-    override suspend fun wallpaperUpload(image: MultipartBody.Part) {
+    override suspend fun wallpaperUpload(image: MultipartBody.Part): Status {
         return wallpaperCollectAPI.wallpaperUpload(image)
     }
 

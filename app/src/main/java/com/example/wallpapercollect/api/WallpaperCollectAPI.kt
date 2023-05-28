@@ -21,10 +21,10 @@ interface WallpaperCollectAPI {
     ): Status
 
     @GET(ApiEndPoints.REGISTER_GOOGLE_SESSION)
-    suspend fun userGoogleRegister() : Unit
+    suspend fun userGoogleRegister() : Any
 
     @GET(ApiEndPoints.REGISTER_FACEBOOK_SESSION)
-    suspend fun userFacebookRegister() : Unit
+    suspend fun userFacebookRegister() : Any
 
     @POST(ApiEndPoints.LOGIN_EMAIL_DEFAULT)
     suspend fun userLogin(
@@ -32,10 +32,10 @@ interface WallpaperCollectAPI {
     ): Status
 
     @GET(ApiEndPoints.LOGIN_GOOGLE_SESSION)
-    suspend fun userGoogleLogin() : Unit
+    suspend fun userGoogleLogin() : Any
 
     @GET(ApiEndPoints.LOGIN_FACEBOOK_SESSION)
-    suspend fun userFacebookLogin() : Unit
+    suspend fun userFacebookLogin() : Any
 
     @GET(ApiEndPoints.LOGOUT)
     suspend fun userLogout()
@@ -44,25 +44,25 @@ interface WallpaperCollectAPI {
 
     /**WALLPAPER PAGE**/
     @GET(ApiEndPoints.WALLPAPER_COLLECTION)
-    suspend fun wallpaperCollection(): Unit
+    suspend fun wallpaperCollection(): Any
 
     @Multipart
     @POST(ApiEndPoints.UPLOAD_WALLPAPER)
     suspend fun wallpaperUpload(
         @Part image: MultipartBody.Part
-    ) : Unit
+    ) : Status
 
 
 
     /**PROFILE INFO**/
     @GET(ApiEndPoints.VIEW_PROFILE)
-    suspend fun profile():Unit
+    suspend fun profile():Any
 
     @Multipart
     @POST(ApiEndPoints.UPLOAD_PROFILE_PICTURE)
     suspend fun profilePictureUpload(
         @Part image: MultipartBody.Part
-    ) : Unit
+    ) : Any
 
     /*TODO make update profile*/
 
@@ -72,17 +72,17 @@ interface WallpaperCollectAPI {
     @GET("images/{id}")
     suspend fun getImage(
         @Path("id") imageId:String
-    ) : Unit
+    ) : Any
 
     @DELETE("images/{id}/delete")
     suspend fun deleteImage(
         @Path("id") imageId:String
-    ) : Unit
+    ) : Any
 
     @GET("photo_profile/{id}")
     suspend fun getPhotoProfile(
         @Path("id") imageId:String
-    ) : Unit
+    ) : Any
 
     /**TODO make End Point that update photo profile and delete photo profile**/
 
