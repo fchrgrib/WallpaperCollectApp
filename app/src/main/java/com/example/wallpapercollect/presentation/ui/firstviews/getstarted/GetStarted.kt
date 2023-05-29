@@ -1,5 +1,7 @@
 package com.example.wallpapercollect.presentation.ui.firstviews.getstarted
 
+import android.annotation.SuppressLint
+import android.webkit.WebView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,17 +14,22 @@ import androidx.compose.foundation.layout.size
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import com.example.wallpapercollect.R
+import com.example.wallpapercollect.api.models.Url
 import com.example.wallpapercollect.presentation.ui.navigation.NavigationRouters
 import com.example.wallpapercollect.presentation.ui.utils.logResTripButton
 import com.example.wallpapercollect.presentation.ui.theme.blue500
@@ -32,8 +39,20 @@ import com.example.wallpapercollect.presentation.ui.theme.interFont
 import com.example.wallpapercollect.presentation.viewmodel.auth.Register
 
 
+@SuppressLint("SetJavaScriptEnabled")
 @Composable
-fun getStarted(navHostController: NavHostController, register: Register = hiltViewModel()) {
+fun GetStarted(navController: NavController, register: Register = hiltViewModel()) {
+
+    val webView = WebView(LocalContext.current)
+    webView.settings.javaScriptEnabled = true
+
+    var isRegisterGoogleSessionClicked by rememberSaveable { mutableStateOf(false) }
+    var isRegisterFacebookSessionClicked by rememberSaveable { mutableStateOf(false) }
+
+    val statusRegisterGoogleSession = register.registerGoogleSession.collectAsState(Url("","")).value
+    val statusRegisterFacebookSession = register.registerFacebookSession.collectAsState(Url("","")).value
+
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -69,8 +88,7 @@ fun getStarted(navHostController: NavHostController, register: Register = hiltVi
                 nameIcon = "email",
                 textButton = "Continue With Email"
             ) {
-                navHostController.navigate(NavigationRouters.REGISTER)
-                navHostController.popBackStack(NavigationRouters.REGISTER, false)
+                navController.navigate(NavigationRouters.REGISTER)
             }
 
             logResTripButton(
@@ -81,7 +99,10 @@ fun getStarted(navHostController: NavHostController, register: Register = hiltVi
                 colorBorder = gray40,
                 nameIcon = "google",
                 textButton = "Continue With Google"
-            ) { register.getRegisterGoogleSession()/*TODO Google API*/}
+            ) {
+                register.getRegisterGoogleSession()
+                isRegisterGoogleSessionClicked = true
+            }
 
             logResTripButton(
                 icon = R.drawable.facebook_logo,
@@ -91,8 +112,10 @@ fun getStarted(navHostController: NavHostController, register: Register = hiltVi
                 colorBorder = blue500,
                 nameIcon = "facebook",
                 textButton = "Continue With Facebook"
-            ) {register.getRegisterGoogleSession()/*TODO Facebook API*/ }
-
+            ) {
+                register.getRegisterGoogleSession()
+                isRegisterFacebookSessionClicked = true
+            }
 
         }
 
@@ -100,21 +123,28 @@ fun getStarted(navHostController: NavHostController, register: Register = hiltVi
         Row {
             Text(text = "Already Have an Account ? ")
             Text(text = "Sig in", color = brand500, modifier = Modifier.clickable {
-                navHostController.navigate(NavigationRouters.LOGIN)
-                navHostController.popBackStack(NavigationRouters.LOGIN,false)
+                navController.navigate(NavigationRouters.LOGIN){ launchSingleTop = true}
             })
         }
         Spacer(modifier = Modifier.padding(top = 15.dp))
     }
-}
 
+    if (
+        statusRegisterGoogleSession.status == "ok"&&
+        isRegisterGoogleSessionClicked
+    ){
+        isRegisterGoogleSessionClicked = false
 
+        webView.loadUrl(statusRegisterGoogleSession.url)
+        return
+    }
+    if (
+        statusRegisterFacebookSession.status == "ok"&&
+        isRegisterFacebookSessionClicked
+    ){
+        isRegisterFacebookSessionClicked = false
 
-
-
-
-@Preview
-@Composable
-fun upperPrev() {
-//    getStarted()
+        webView.loadUrl(statusRegisterFacebookSession.url)
+        return
+    }
 }

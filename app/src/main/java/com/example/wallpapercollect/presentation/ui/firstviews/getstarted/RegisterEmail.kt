@@ -1,6 +1,7 @@
 package com.example.wallpapercollect.presentation.ui.firstviews.getstarted
 
 import android.annotation.SuppressLint
+import android.webkit.WebView
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,14 +27,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import com.example.wallpapercollect.R
 import com.example.wallpapercollect.api.models.Status
 import com.example.wallpapercollect.api.models.Url
@@ -49,20 +50,29 @@ import com.example.wallpapercollect.presentation.ui.theme.gray40
 
 import com.example.wallpapercollect.presentation.ui.theme.interFont
 import com.example.wallpapercollect.presentation.viewmodel.auth.Register
-import com.squareup.moshi.Json
-import com.squareup.moshi.Moshi
-import kotlinx.coroutines.awaitAll
 
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "SetJavaScriptEnabled")
 @Composable
-fun registerEmailScreen(
+fun RegisterEmailScreen(
     register: Register = hiltViewModel(),
-    navHostController: NavHostController
+    navController: NavController
 ) {
-    var isRegisterEmailDefaultClicked by rememberSaveable { mutableStateOf(false) }
-    var statusRegisterEmailDefaultSession = register.registerEmailDefaultStatus.collectAsState(Status("")).value
+    val webView = WebView(LocalContext.current)
+    val webViewSetting = webView.settings
+    webViewSetting.javaScriptEnabled = true
+
+
+    var isRegisterEmailDefaultSessionClicked by rememberSaveable { mutableStateOf(false) }
+    var isRegisterGoogleSessionClicked by rememberSaveable { mutableStateOf(false) }
+    var isRegisterFacebookSessionClicked by rememberSaveable { mutableStateOf(false) }
+
+    val statusRegisterEmailDefaultSession = register.registerEmailDefaultStatus.collectAsState(Status("")).value
+    val statusRegisterGoogleSession = register.registerGoogleSession.collectAsState(Url("","")).value
+    val statusRegisterFacebookSession = register.registerFacebookSession.collectAsState(Url("","")).value
+
+
     var email by rememberSaveable { mutableStateOf("") }
     var fullName by rememberSaveable { mutableStateOf("") }
     var phoneNumber by rememberSaveable { mutableStateOf("") }
@@ -79,12 +89,12 @@ fun registerEmailScreen(
                         contentDescription = "Back",
                         modifier = Modifier
                             .padding(16.dp)
-                            .clickable { navHostController.popBackStack() },
+                            .clickable { navController.popBackStack() },
                         tint = Color.Unspecified
                     )
                 }
             },
-            content = { body(
+            content = { BodyRegisterEmail(
                 email = { email = it },
                 phoneNumber = { phoneNumber = it },
                 fullName = { fullName = it },
@@ -98,11 +108,17 @@ fun registerEmailScreen(
                         email = email
                     )
                 )
-                                         isRegisterEmailDefaultClicked = true
+                                         isRegisterEmailDefaultSessionClicked = true
                                          },
-                onClickRegisterGoogle = { register.getRegisterGoogleSession() /**TODO make redirect to url with webview or intent**/},
-                onClickRegisterFacebook = {register.getRegisterFacebookSession() /**TODO make redirect to url with webview or intent**/},
-                onClickSignIn = {navHostController.navigate(NavigationRouters.LOGIN)}
+                onClickRegisterGoogle = {
+                    register.getRegisterGoogleSession()
+                    isRegisterGoogleSessionClicked = true
+                                        },
+                onClickRegisterFacebook = {
+                    register.getRegisterFacebookSession()
+                    isRegisterFacebookSessionClicked = true
+                                          },
+                navController = navController
             )
             }
         )
@@ -111,32 +127,47 @@ fun registerEmailScreen(
     //TODO do something if user insert invalid data
     if(
         statusRegisterEmailDefaultSession.status == "ok" &&
-        isRegisterEmailDefaultClicked
+        isRegisterEmailDefaultSessionClicked
     ){
-        statusRegisterEmailDefaultSession = Status("")
-        isRegisterEmailDefaultClicked = false
+        isRegisterEmailDefaultSessionClicked = false
 
-        navHostController.navigate(NavigationRouters.LOGIN)
-        navHostController.popBackStack(NavigationRouters.LOGIN,false)
-
+        navController.navigate(NavigationRouters.LOGIN)
+        navController.popBackStack(NavigationRouters.LOGIN,false)
+        return
     }
-    
+    if (
+        statusRegisterGoogleSession.status == "ok"&&
+        isRegisterGoogleSessionClicked
+    ){
+        isRegisterGoogleSessionClicked = false
+
+        webView.loadUrl(statusRegisterGoogleSession.url)
+        return
+    }
+    if (
+        statusRegisterFacebookSession.status == "ok"&&
+        isRegisterFacebookSessionClicked
+    ){
+        isRegisterFacebookSessionClicked = false
+
+        webView.loadUrl(statusRegisterFacebookSession.url)
+        return
+    }
 }
 
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun body(
-    email : (String) -> Unit,
+fun BodyRegisterEmail(
+    email: (String) -> Unit,
     fullName: (String) -> Unit,
     phoneNumber: (String) -> Unit,
     password: (String) -> Unit,
-    confirmPassword : (String) -> Unit,
-    onClickRegisterDefault : () -> Unit,
-    onClickRegisterGoogle : () -> Unit,
-    onClickRegisterFacebook : () -> Unit,
-    onClickSignIn : () -> Unit
+    confirmPassword: (String) -> Unit,
+    onClickRegisterDefault: () -> Unit,
+    onClickRegisterGoogle: () -> Unit,
+    onClickRegisterFacebook: () -> Unit,
+    navController: NavController
 ) {
 
     Column(modifier = Modifier.padding(top = 114.dp, start = 24.dp, end = 22.dp)) {
@@ -253,24 +284,10 @@ fun body(
                     color = brand500,
                     fontSize = 12.sp,
                     modifier = Modifier.clickable
-                    {onClickSignIn}
+                    {navController.navigate(NavigationRouters.LOGIN){launchSingleTop = true}}
                 )
             }
         }
 
     }
-}
-
-
-
-@Preview
-@Composable
-fun prevRegisterEmail() {
-//    registerEmailScreen()
-}
-
-@Preview
-@Composable
-fun prevBody() {
-//    body()
 }

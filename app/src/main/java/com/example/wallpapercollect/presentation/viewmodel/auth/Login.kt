@@ -3,6 +3,7 @@ package com.example.wallpapercollect.presentation.viewmodel.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.wallpapercollect.api.models.Status
+import com.example.wallpapercollect.api.models.Url
 import com.example.wallpapercollect.api.models.UserLogIn
 import com.example.wallpapercollect.repository.WallpaperCollectRepoImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,8 +18,8 @@ class Login @Inject constructor(
     private val wallpaperCollectRepoImpl: WallpaperCollectRepoImpl
 ):ViewModel() {
     private val _loginEmailDefault = MutableStateFlow(Status(""))
-    private val _loginGoogleSession = MutableStateFlow<Any?>(null)
-    private val _loginFacebookSession = MutableStateFlow<Any?>(null)
+    private val _loginGoogleSession = MutableStateFlow(Url("",""))
+    private val _loginFacebookSession = MutableStateFlow(Url("",""))
 
     var loginEmailDefault = _loginEmailDefault
     var loginGoogleSession = _loginGoogleSession
@@ -41,7 +42,7 @@ class Login @Inject constructor(
                 val response = wallpaperCollectRepoImpl.userGoogleLogin()
                 _loginGoogleSession.emit(response)
             }catch (e :Exception){
-                _loginGoogleSession.emit(Status(e.message.toString()))
+                _loginGoogleSession.emit(Url("",e.message.toString()))
             }
         }
     }
@@ -52,7 +53,7 @@ class Login @Inject constructor(
                 val response = wallpaperCollectRepoImpl.userFacebookLogin()
                 _loginFacebookSession.emit(response)
             }catch (e : Exception){
-                _loginFacebookSession.emit(Status(e.message.toString()))
+                _loginFacebookSession.emit(Url("",e.message.toString()))
             }
         }
     }

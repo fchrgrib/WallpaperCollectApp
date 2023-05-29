@@ -20,12 +20,12 @@ class Register @Inject constructor(
     private val wallpaperCollectRepoImpl: WallpaperCollectRepoImpl
 ): ViewModel() {
     private val _registerEmailDefaultStatus = MutableStateFlow(Status(""))
-    private val _registerGoogleSession = MutableStateFlow(Url(""))
-    private val _registerFacebookSession = MutableStateFlow<Any?>(null)
+    private val _registerGoogleSession = MutableStateFlow(Url("", ""))
+    private val _registerFacebookSession = MutableStateFlow(Url("", ""))
 
     val registerEmailDefaultStatus: Flow<Status> = _registerEmailDefaultStatus
     val registerGoogleSession : Flow<Url> = _registerGoogleSession
-    val registerFacebookSession: Flow<Any?> = _registerFacebookSession
+    val registerFacebookSession: Flow<Url> = _registerFacebookSession
 
     fun postRegisterEmailDefault(userRegister: UserRegister){
         viewModelScope.launch {
@@ -44,7 +44,7 @@ class Register @Inject constructor(
                 val response = wallpaperCollectRepoImpl.userGoogleRegister()
                 _registerGoogleSession.emit(response)
             }catch (e : Exception){
-                _registerGoogleSession.emit(Url(""))
+                _registerGoogleSession.emit(Url("",e.message.toString()))
             }
         }
     }
@@ -55,7 +55,7 @@ class Register @Inject constructor(
                 val response = wallpaperCollectRepoImpl.userFacebookRegister()
                 _registerFacebookSession.emit(response)
             }catch (e :Exception){
-                _registerFacebookSession.emit(Status(e.message.toString()))
+                _registerFacebookSession.emit(Url("",e.message.toString()))
             }
         }
     }

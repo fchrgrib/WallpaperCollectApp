@@ -1,6 +1,7 @@
 package com.example.wallpapercollect.presentation.ui.firstviews.getstarted
 
 import android.annotation.SuppressLint
+import android.webkit.WebView
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,43 +20,55 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.wallpapercollect.R
 import com.example.wallpapercollect.api.models.Status
+import com.example.wallpapercollect.api.models.Url
 import com.example.wallpapercollect.api.models.UserLogIn
 import com.example.wallpapercollect.presentation.ui.navigation.NavigationRouters
+import com.example.wallpapercollect.presentation.ui.theme.blue500
+import com.example.wallpapercollect.presentation.ui.theme.brand500
+import com.example.wallpapercollect.presentation.ui.theme.gray40
+import com.example.wallpapercollect.presentation.ui.theme.interFont
 import com.example.wallpapercollect.presentation.ui.utils.logResButton
 import com.example.wallpapercollect.presentation.ui.utils.logResTripButton
 import com.example.wallpapercollect.presentation.ui.utils.textFieldLogRes
 import com.example.wallpapercollect.presentation.ui.utils.textFieldLogResPass
 import com.example.wallpapercollect.presentation.ui.utils.textHeaderLogRes
-import com.example.wallpapercollect.presentation.ui.theme.blue500
-import com.example.wallpapercollect.presentation.ui.theme.brand500
-import com.example.wallpapercollect.presentation.ui.theme.gray40
-import com.example.wallpapercollect.presentation.ui.theme.interFont
 import com.example.wallpapercollect.presentation.viewmodel.auth.Login
 
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "SetJavaScriptEnabled")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun loginScreen(
+fun LoginScreen(
     login: Login = hiltViewModel(),
     navHostController: NavHostController
 ) {
+    val webView = WebView(LocalContext.current)
+    val webViewSetting = webView.settings
+    webViewSetting.javaScriptEnabled = true
+
+
+    val statusLoginEmailDefaultSession = login.loginEmailDefault.collectAsState(Status("")).value
+    val statusLoginGoogleSession = login.loginGoogleSession.collectAsState(Url("","")).value
+    val statusLoginFacebookSession = login.loginFacebookSession.collectAsState(Url("","")).value
+
+    var isLoginEmailDefaultSessionClicked by rememberSaveable { mutableStateOf(false) }
+    var isLoginGoogleSessionClicked by rememberSaveable { mutableStateOf(false) }
+    var isLoginFacebookSessionClicked by rememberSaveable { mutableStateOf(false) }
+
 
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
-    var loginEmailDefaultClicked by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var statusLoginSessionEmailDefault = login.loginEmailDefault.collectAsState().value
+
+
     Column {
 
         Scaffold(
@@ -73,15 +86,24 @@ fun loginScreen(
                     )
                 }
             },
-            content = { bodyLoginScreen(
-                onClickLoginEmailDefault = {login.getLoginEmailDefault(
-                    UserLogIn(
-                        email = email,
-                        password = password
+            content = { BodyLoginScreen(
+                onClickLoginEmailDefault = {
+                    login.getLoginEmailDefault(
+                        UserLogIn(
+                            email = email,
+                            password = password
+                        )
                     )
-                )},
-                onClickLoginFacebookSession = {login.getLoginFacebookSession()},
-                onClickLoginGoogleSession = {login.getLoginGoogleSession()},
+                    isLoginEmailDefaultSessionClicked = true
+                                           },
+                onClickLoginFacebookSession = {
+                    login.getLoginFacebookSession()
+                    isLoginFacebookSessionClicked = true
+                                              },
+                onClickLoginGoogleSession = {
+                    login.getLoginGoogleSession()
+                    isLoginGoogleSessionClicked = true
+                                            },
                 email = {email = it},
                 password = {password = it},
                 navHostController = navHostController
@@ -89,22 +111,42 @@ fun loginScreen(
         )
     }
     if(
-        (statusLoginSessionEmailDefault.status != "" || statusLoginSessionEmailDefault.status != "ok") &&
-        (loginEmailDefaultClicked)
+        (statusLoginEmailDefaultSession.status != "" && statusLoginEmailDefaultSession.status != "ok") &&
+        (isLoginEmailDefaultSessionClicked)
     ){
         //TODO do something in this condition
     }
 
-    if(statusLoginSessionEmailDefault.status == "ok"&&loginEmailDefaultClicked){
-        statusLoginSessionEmailDefault = Status("")
-        loginEmailDefaultClicked = false
-        navHostController.navigate(NavigationRouters.WALLPAPER)
-        navHostController.popBackStack(NavigationRouters.WALLPAPER,false)
+    if(
+        statusLoginEmailDefaultSession.status == "ok"&&
+        isLoginEmailDefaultSessionClicked
+    ){
+        isLoginEmailDefaultSessionClicked = false
+
+        navHostController.navigate(NavigationRouters.WALLPAPER){
+            popUpTo(NavigationRouters.LOGIN){ inclusive = true}
+        }
+    }
+    if(
+        statusLoginGoogleSession.status == "ok"&&
+        isLoginGoogleSessionClicked
+    ){
+        isLoginGoogleSessionClicked = false
+
+        webView.loadUrl(statusLoginGoogleSession.url)
+    }
+    if(
+        statusLoginFacebookSession.status == "ok"&&
+        isLoginFacebookSessionClicked
+    ){
+        isLoginFacebookSessionClicked = false
+
+        webView.loadUrl(statusLoginFacebookSession.url)
     }
 }
 
 @Composable
-fun bodyLoginScreen(
+fun BodyLoginScreen(
     onClickLoginEmailDefault : () -> Unit,
     onClickLoginFacebookSession : () -> Unit,
     onClickLoginGoogleSession : () -> Unit,
@@ -115,8 +157,6 @@ fun bodyLoginScreen(
 
 
     Column(modifier = Modifier.padding(top = 114.dp, start = 24.dp, end = 24.dp)) {
-//        var emailTextField by rememberSaveable { mutableStateOf("") }
-//        var password by rememberSaveable { mutableStateOf("") }
 
         textHeaderLogRes(header = "Let’s Sign You in", description = "Welcome back, You‘ve  been missed")
         Spacer(modifier = Modifier.padding(top = 28.dp))
@@ -127,9 +167,9 @@ fun bodyLoginScreen(
             Spacer(modifier = Modifier.padding(top = 16.dp))
 
             textFieldLogResPass(placeHolder = "Enter your password", content = {password(it)})
-            Spacer(modifier = Modifier.padding(top = 28.dp))
+            Spacer(modifier = Modifier.padding(top = 56.dp))
 
-            logResButton(textButton = "Login") {/*TODO make login checker*/ onClickLoginEmailDefault}
+            logResButton(textButton = "Login", onClickable =onClickLoginEmailDefault /*TODO make login checker*/)
             Spacer(modifier = Modifier.padding(top = 28.dp))
 
             Text(
@@ -148,8 +188,9 @@ fun bodyLoginScreen(
                 colorText = Color.White,
                 colorBorder = blue500,
                 nameIcon = "facebook",
-                textButton = "Sign In With Facebook"
-            ) {/*TODO Facebook API*/ onClickLoginFacebookSession }
+                textButton = "Sign In With Facebook",
+                onClick = onClickLoginFacebookSession
+            )
 
             logResTripButton(
                 icon = R.drawable.google_logo,
@@ -158,8 +199,9 @@ fun bodyLoginScreen(
                 colorText = Color.Black,
                 colorBorder = gray40,
                 nameIcon = "google",
-                textButton = "Sign In With Google"
-            ) {/*TODO Google API*/ onClickLoginGoogleSession}
+                textButton = "Sign In With Google",
+                onClick = onClickLoginGoogleSession
+            )
             Spacer(modifier = Modifier.padding(vertical = 16.dp))
 
             Row {
@@ -188,14 +230,3 @@ fun bodyLoginScreen(
     }
 }
 
-@Preview
-@Composable
-fun prevLoginScreen() {
-//    loginScreen()
-}
-
-@Preview
-@Composable
-fun prevBodyLoginScreen() {
-//    bodyLoginScreen()
-}

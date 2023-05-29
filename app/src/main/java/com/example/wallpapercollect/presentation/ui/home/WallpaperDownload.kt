@@ -32,7 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.wallpapercollect.R
-import com.example.wallpapercollect.presentation.ui.firstviews.getstarted.body
 import com.example.wallpapercollect.presentation.ui.theme.brand500
 
 

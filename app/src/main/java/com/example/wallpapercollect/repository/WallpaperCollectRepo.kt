@@ -11,10 +11,10 @@ import okhttp3.MultipartBody
 interface WallpaperCollectRepo {
     suspend fun userRegister(user: UserRegister): Status
     suspend fun userGoogleRegister() :Url
-    suspend fun userFacebookRegister() :Any
+    suspend fun userFacebookRegister() :Url
     suspend fun userLogin(user: UserLogIn): Status
-    suspend fun userGoogleLogin():Any
-    suspend fun userFacebookLogin():Any
+    suspend fun userGoogleLogin():Url
+    suspend fun userFacebookLogin():Url
     suspend fun userLogout()
 
 

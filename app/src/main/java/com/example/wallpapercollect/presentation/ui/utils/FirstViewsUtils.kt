@@ -150,11 +150,11 @@ fun logResTripButton(
     colorBorder: Color,
     nameIcon:String,
     textButton: String,
-    todo: () -> Unit
+    onClick: () -> Unit
 
 ) {
     Button(
-        onClick = todo,
+        onClick = onClick,
         colors = ButtonDefaults.buttonColors(containerColor = colorButton),
         modifier = Modifier
             .fillMaxWidth()

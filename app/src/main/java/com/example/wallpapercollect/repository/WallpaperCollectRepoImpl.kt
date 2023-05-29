@@ -6,7 +6,6 @@ import com.example.wallpapercollect.api.models.Url
 import com.example.wallpapercollect.api.models.UserDescription
 import com.example.wallpapercollect.api.models.UserLogIn
 import com.example.wallpapercollect.api.models.UserRegister
-import com.example.wallpapercollect.repository.WallpaperCollectRepo
 import okhttp3.MultipartBody
 import javax.inject.Inject
 
@@ -21,7 +20,7 @@ class WallpaperCollectRepoImpl @Inject constructor(
         return wallpaperCollectAPI.userGoogleRegister()
     }
 
-    override suspend fun userFacebookRegister(): Any {
+    override suspend fun userFacebookRegister(): Url {
         return wallpaperCollectAPI.userFacebookRegister()
     }
 
@@ -29,11 +28,11 @@ class WallpaperCollectRepoImpl @Inject constructor(
         return wallpaperCollectAPI.userLogin(user)
     }
 
-    override suspend fun userGoogleLogin(): Any {
+    override suspend fun userGoogleLogin(): Url {
         return wallpaperCollectAPI.userGoogleLogin()
     }
 
-    override suspend fun userFacebookLogin(): Any {
+    override suspend fun userFacebookLogin(): Url {
         return wallpaperCollectAPI.userFacebookLogin()
     }
 

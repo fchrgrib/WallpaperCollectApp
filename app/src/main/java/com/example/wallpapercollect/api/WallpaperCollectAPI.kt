@@ -26,7 +26,7 @@ interface WallpaperCollectAPI {
     suspend fun userGoogleRegister() : Url
 
     @GET(ApiEndPoints.REGISTER_FACEBOOK_SESSION)
-    suspend fun userFacebookRegister() : Any
+    suspend fun userFacebookRegister() : Url
 
     @POST(ApiEndPoints.LOGIN_EMAIL_DEFAULT)
     suspend fun userLogin(
@@ -34,10 +34,10 @@ interface WallpaperCollectAPI {
     ): Status
 
     @GET(ApiEndPoints.LOGIN_GOOGLE_SESSION)
-    suspend fun userGoogleLogin() : Any
+    suspend fun userGoogleLogin() : Url
 
     @GET(ApiEndPoints.LOGIN_FACEBOOK_SESSION)
-    suspend fun userFacebookLogin() : Any
+    suspend fun userFacebookLogin() : Url
 
     @GET(ApiEndPoints.LOGOUT)
     suspend fun userLogout()
