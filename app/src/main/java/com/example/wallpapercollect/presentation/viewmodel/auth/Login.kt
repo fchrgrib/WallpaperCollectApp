@@ -20,9 +20,9 @@ class Login @Inject constructor(
     private val _loginGoogleSession = MutableStateFlow<Any?>(null)
     private val _loginFacebookSession = MutableStateFlow<Any?>(null)
 
-    val loginEmailDefault = _loginEmailDefault
-    val loginGoogleSession = _loginGoogleSession
-    val loginFacebookSession = _loginFacebookSession
+    var loginEmailDefault = _loginEmailDefault
+    var loginGoogleSession = _loginGoogleSession
+    var loginFacebookSession = _loginFacebookSession
 
     fun getLoginEmailDefault(userLogin: UserLogIn){
         viewModelScope.launch {

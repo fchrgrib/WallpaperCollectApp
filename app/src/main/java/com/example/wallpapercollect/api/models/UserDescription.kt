@@ -10,5 +10,9 @@ data class UserDescription(
     @Json(name = "email")
     val email:String,
     @Json(name = "phone_number")
-    val phoneNumber:String
+    val phoneNumber:String,
+    @Json(name = "photo_profile")
+    val photoProfile:String,
+    @Json(name = "status")
+    val status:String
 )

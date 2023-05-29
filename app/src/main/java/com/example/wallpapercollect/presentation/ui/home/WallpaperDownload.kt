@@ -39,7 +39,7 @@ import com.example.wallpapercollect.presentation.ui.theme.brand500
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun downloadScreen() {
+fun downloadScreen(id : String) {
     Scaffold(
         topBar = {
             Row(horizontalArrangement = Arrangement.SpaceBetween
@@ -77,7 +77,7 @@ fun downloadScreen() {
 @Preview
 @Composable
 fun prevDownloadScreen() {
-    downloadScreen()
+//    downloadScreen()
 }
 
 @Composable

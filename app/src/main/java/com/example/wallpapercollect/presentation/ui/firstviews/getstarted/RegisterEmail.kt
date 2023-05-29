@@ -18,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -32,8 +33,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.example.wallpapercollect.R
+import com.example.wallpapercollect.api.models.Status
+import com.example.wallpapercollect.api.models.Url
 import com.example.wallpapercollect.api.models.UserRegister
+import com.example.wallpapercollect.presentation.ui.navigation.NavigationRouters
 import com.example.wallpapercollect.presentation.ui.utils.logResButton
 import com.example.wallpapercollect.presentation.ui.utils.textFieldLogRes
 import com.example.wallpapercollect.presentation.ui.utils.textFieldLogResPass
@@ -44,14 +49,20 @@ import com.example.wallpapercollect.presentation.ui.theme.gray40
 
 import com.example.wallpapercollect.presentation.ui.theme.interFont
 import com.example.wallpapercollect.presentation.viewmodel.auth.Register
+import com.squareup.moshi.Json
+import com.squareup.moshi.Moshi
+import kotlinx.coroutines.awaitAll
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun registerEmailScreen(
-    register: Register = hiltViewModel()
+    register: Register = hiltViewModel(),
+    navHostController: NavHostController
 ) {
+    var isRegisterEmailDefaultClicked by rememberSaveable { mutableStateOf(false) }
+    var statusRegisterEmailDefaultSession = register.registerEmailDefaultStatus.collectAsState(Status("")).value
     var email by rememberSaveable { mutableStateOf("") }
     var fullName by rememberSaveable { mutableStateOf("") }
     var phoneNumber by rememberSaveable { mutableStateOf("") }
@@ -68,9 +79,7 @@ fun registerEmailScreen(
                         contentDescription = "Back",
                         modifier = Modifier
                             .padding(16.dp)
-                            .clickable {
-                                // Implement back action here
-                            },
+                            .clickable { navHostController.popBackStack() },
                         tint = Color.Unspecified
                     )
                 }
@@ -88,17 +97,30 @@ fun registerEmailScreen(
                         password = password,
                         email = email
                     )
-                )},
-                onClickRegisterGoogle = {},
-                onClickRegisterFacebook = {},
-                onClickSignIn = {}
+                )
+                                         isRegisterEmailDefaultClicked = true
+                                         },
+                onClickRegisterGoogle = { register.getRegisterGoogleSession() /**TODO make redirect to url with webview or intent**/},
+                onClickRegisterFacebook = {register.getRegisterFacebookSession() /**TODO make redirect to url with webview or intent**/},
+                onClickSignIn = {navHostController.navigate(NavigationRouters.LOGIN)}
             )
             }
         )
+    }
 
+    //TODO do something if user insert invalid data
+    if(
+        statusRegisterEmailDefaultSession.status == "ok" &&
+        isRegisterEmailDefaultClicked
+    ){
+        statusRegisterEmailDefaultSession = Status("")
+        isRegisterEmailDefaultClicked = false
 
+        navHostController.navigate(NavigationRouters.LOGIN)
+        navHostController.popBackStack(NavigationRouters.LOGIN,false)
 
     }
+    
 }
 
 
@@ -116,11 +138,6 @@ fun body(
     onClickRegisterFacebook : () -> Unit,
     onClickSignIn : () -> Unit
 ) {
-//    var email by rememberSaveable { mutableStateOf("") }
-//    var fullName by rememberSaveable { mutableStateOf("") }
-//    var phoneNumber by rememberSaveable { mutableStateOf("") }
-//    var password by rememberSaveable { mutableStateOf("") }
-//    var confirmPassword by rememberSaveable { mutableStateOf("") }
 
     Column(modifier = Modifier.padding(top = 114.dp, start = 24.dp, end = 22.dp)) {
 
@@ -160,7 +177,7 @@ fun body(
             Spacer(modifier = Modifier.padding(top = 24.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                 Button(
-                    onClick = { onClickRegisterFacebook },
+                    onClick = onClickRegisterFacebook ,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = blue500
                     ),
@@ -249,7 +266,7 @@ fun body(
 @Preview
 @Composable
 fun prevRegisterEmail() {
-    registerEmailScreen()
+//    registerEmailScreen()
 }
 
 @Preview

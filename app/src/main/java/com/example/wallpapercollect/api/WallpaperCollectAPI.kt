@@ -1,6 +1,8 @@
 package com.example.wallpapercollect.api
 
 import com.example.wallpapercollect.api.models.Status
+import com.example.wallpapercollect.api.models.Url
+import com.example.wallpapercollect.api.models.UserDescription
 import com.example.wallpapercollect.api.models.UserRegister
 import com.example.wallpapercollect.api.models.UserLogIn
 import okhttp3.MultipartBody
@@ -21,7 +23,7 @@ interface WallpaperCollectAPI {
     ): Status
 
     @GET(ApiEndPoints.REGISTER_GOOGLE_SESSION)
-    suspend fun userGoogleRegister() : Any
+    suspend fun userGoogleRegister() : Url
 
     @GET(ApiEndPoints.REGISTER_FACEBOOK_SESSION)
     suspend fun userFacebookRegister() : Any
@@ -56,7 +58,7 @@ interface WallpaperCollectAPI {
 
     /**PROFILE INFO**/
     @GET(ApiEndPoints.VIEW_PROFILE)
-    suspend fun profile():Any
+    suspend fun profile():UserDescription
 
     @Multipart
     @POST(ApiEndPoints.UPLOAD_PROFILE_PICTURE)

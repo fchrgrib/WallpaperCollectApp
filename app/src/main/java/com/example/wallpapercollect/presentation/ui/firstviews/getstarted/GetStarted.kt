@@ -20,17 +20,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.example.wallpapercollect.R
+import com.example.wallpapercollect.presentation.ui.navigation.NavigationRouters
 import com.example.wallpapercollect.presentation.ui.utils.logResTripButton
 import com.example.wallpapercollect.presentation.ui.theme.blue500
 import com.example.wallpapercollect.presentation.ui.theme.brand500
 import com.example.wallpapercollect.presentation.ui.theme.gray40
 import com.example.wallpapercollect.presentation.ui.theme.interFont
-
+import com.example.wallpapercollect.presentation.viewmodel.auth.Register
 
 
 @Composable
-fun getStarted() {
+fun getStarted(navHostController: NavHostController, register: Register = hiltViewModel()) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -65,7 +68,10 @@ fun getStarted() {
                 colorBorder = brand500,
                 nameIcon = "email",
                 textButton = "Continue With Email"
-            ) {/*TODO E-mail API*/ }
+            ) {
+                navHostController.navigate(NavigationRouters.REGISTER)
+                navHostController.popBackStack(NavigationRouters.REGISTER, false)
+            }
 
             logResTripButton(
                 icon = R.drawable.google_logo,
@@ -75,7 +81,7 @@ fun getStarted() {
                 colorBorder = gray40,
                 nameIcon = "google",
                 textButton = "Continue With Google"
-            ) {/*TODO Google API*/}
+            ) { register.getRegisterGoogleSession()/*TODO Google API*/}
 
             logResTripButton(
                 icon = R.drawable.facebook_logo,
@@ -85,7 +91,7 @@ fun getStarted() {
                 colorBorder = blue500,
                 nameIcon = "facebook",
                 textButton = "Continue With Facebook"
-            ) {/*TODO Facebook API*/ }
+            ) {register.getRegisterGoogleSession()/*TODO Facebook API*/ }
 
 
         }
@@ -94,15 +100,11 @@ fun getStarted() {
         Row {
             Text(text = "Already Have an Account ? ")
             Text(text = "Sig in", color = brand500, modifier = Modifier.clickable {
-            // TODO Sig in Intent
+                navHostController.navigate(NavigationRouters.LOGIN)
+                navHostController.popBackStack(NavigationRouters.LOGIN,false)
             })
         }
-
         Spacer(modifier = Modifier.padding(top = 15.dp))
-
-
-
-
     }
 }
 
@@ -114,5 +116,5 @@ fun getStarted() {
 @Preview
 @Composable
 fun upperPrev() {
-    getStarted()
+//    getStarted()
 }

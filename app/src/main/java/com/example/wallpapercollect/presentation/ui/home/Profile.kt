@@ -28,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,16 +41,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.example.wallpapercollect.R
 import com.example.wallpapercollect.presentation.ui.firstviews.getstarted.body
 import com.example.wallpapercollect.presentation.ui.theme.brand500
 import com.example.wallpapercollect.presentation.ui.utils.boxContent
+import com.example.wallpapercollect.presentation.viewmodel.profile.Profile
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun screenProfile() {
+fun screenProfile(
+    navHostController: NavHostController,
+    profile: Profile = hiltViewModel()
+) {
+    var profileInfo = profile.profileInfo.collectAsState().value
     Scaffold(
         topBar = {
             Row {
@@ -58,24 +66,35 @@ fun screenProfile() {
                     contentDescription = "Back",
                     modifier = Modifier
                         .padding(16.dp)
-                        .clickable {
-                            // TODO Implement back action here
-                        },
+                        .clickable { navHostController.popBackStack() },
                     tint = Color.Unspecified
                 )
             }
         },
-        content = { profileBody() }
+        content = { profileBody(
+            userName = profileInfo.userName,
+            email = profileInfo.email,
+            phoneNumber = profileInfo.phoneNumber,
+            photoProfile = profileInfo.photoProfile,
+            location = "Indonesian"
+        ) }
     )
+
 }
 
 @Preview
 @Composable
 fun prevScreenProfile() {
-    screenProfile()
+//    screenProfile()
 }
 @Composable
-fun profileBody() {
+fun profileBody(
+    userName: String,
+    photoProfile: String, // TODO make async photo profile
+    phoneNumber: String,
+    email: String,
+    location: String
+) {
     Column(modifier = Modifier.fillMaxSize()) {
         topPartOfProfile(
             photoProfile = R.drawable.foto_gue,
@@ -85,9 +104,9 @@ fun profileBody() {
             onClickEdit = {/*TODO edit*/}
         )
         bottomPartOfProfile(
-            "+6287724273282",
-            "Fahrian.Afdholi@gmail.com",
-            "Indonesia"
+            phoneNumber = phoneNumber,
+            email = email,
+            location = location
         ) {/*TODO make onCLick delete account*/ }
     }
 }
@@ -95,7 +114,7 @@ fun profileBody() {
 @Preview
 @Composable
 fun prevProfileBody() {
-    profileBody()
+//    profileBody()
 }
 
 @Composable
@@ -205,7 +224,7 @@ fun topPartOfProfile(
                             .offset(x = 78.dp, y = 78.dp)
                             .clickable(
                                 indication = null,
-                                onClick = {onClickCameraIcon},
+                                onClick = { onClickCameraIcon },
                                 interactionSource = interactionSource
                             )
                     )
@@ -226,7 +245,7 @@ fun topPartOfProfile(
                             .clickable { onClickEdit }
                             .clickable(
                                 interactionSource = interactionSource,
-                                onClick = {onClickEdit},
+                                onClick = { onClickEdit },
                                 indication = null
                             )
                     )

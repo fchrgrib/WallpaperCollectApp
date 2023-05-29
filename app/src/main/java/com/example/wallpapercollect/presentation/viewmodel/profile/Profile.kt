@@ -3,6 +3,7 @@ package com.example.wallpapercollect.presentation.viewmodel.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.wallpapercollect.api.models.Status
+import com.example.wallpapercollect.api.models.UserDescription
 import com.example.wallpapercollect.repository.WallpaperCollectRepoImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,7 @@ class Profile @Inject constructor(
     private val wallpaperCollectRepoImpl: WallpaperCollectRepoImpl
 ): ViewModel() {
 
-    private val _profileInfo = MutableStateFlow<Any?>(null)
+    private val _profileInfo = MutableStateFlow(UserDescription("","","","",""))
 
     val profileInfo = _profileInfo
 
@@ -25,7 +26,7 @@ class Profile @Inject constructor(
                 val response = wallpaperCollectRepoImpl.profile()
                 _profileInfo.emit(response)
             }catch (e :Exception){
-                _profileInfo.emit(Status(e.message.toString()))
+                _profileInfo.emit(UserDescription("","","","",e.message.toString()))
             }
         }
     }
