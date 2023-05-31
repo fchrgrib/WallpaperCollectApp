@@ -100,7 +100,7 @@ fun GetStarted(navController: NavController, register: Register = hiltViewModel(
                 nameIcon = "google",
                 textButton = "Continue With Google"
             ) {
-                register.getRegisterGoogleSession()
+//                register.getRegisterGoogleSession()
                 isRegisterGoogleSessionClicked = true
             }
 
@@ -113,7 +113,7 @@ fun GetStarted(navController: NavController, register: Register = hiltViewModel(
                 nameIcon = "facebook",
                 textButton = "Continue With Facebook"
             ) {
-                register.getRegisterGoogleSession()
+//                register.getRegisterGoogleSession()
                 isRegisterFacebookSessionClicked = true
             }
 
@@ -129,15 +129,15 @@ fun GetStarted(navController: NavController, register: Register = hiltViewModel(
         Spacer(modifier = Modifier.padding(top = 15.dp))
     }
 
-    if (
-        statusRegisterGoogleSession.status == "ok"&&
-        isRegisterGoogleSessionClicked
-    ){
-        isRegisterGoogleSessionClicked = false
-
-        webView.loadUrl(statusRegisterGoogleSession.url)
-        return
-    }
+//    if (
+//        statusRegisterGoogleSession.status == "ok"&&
+//        isRegisterGoogleSessionClicked
+//    ){
+//        isRegisterGoogleSessionClicked = false
+//
+//        webView.loadUrl(statusRegisterGoogleSession.url)
+//        return
+//    }
     if (
         statusRegisterFacebookSession.status == "ok"&&
         isRegisterFacebookSessionClicked

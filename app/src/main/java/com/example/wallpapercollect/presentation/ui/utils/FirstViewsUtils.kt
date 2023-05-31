@@ -87,7 +87,7 @@ fun textFieldLogRes(placeHolder:String, content : (String) -> Unit) {
             containerColor = Color(0xFFF7F8F9),
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            textColor = gray200
+            disabledTextColor = gray200
         ),
         shape = RoundedCornerShape(10.dp)
     )
@@ -127,7 +127,7 @@ fun textFieldLogResPass(placeHolder:String, content : (String) -> Unit) {
             containerColor = Color(0xFFF7F8F9),
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            textColor = gray200
+            disabledTextColor = gray200
         ),
         shape = RoundedCornerShape(10.dp),
         visualTransformation = if (isVisible) PasswordVisualTransformation('*') else VisualTransformation.None,

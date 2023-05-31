@@ -2,6 +2,7 @@ package com.example.wallpapercollect.repository
 
 import android.widget.TextView.SavedState
 import com.example.wallpapercollect.api.models.Status
+import com.example.wallpapercollect.api.models.Token
 import com.example.wallpapercollect.api.models.Url
 import com.example.wallpapercollect.api.models.UserDescription
 import com.example.wallpapercollect.api.models.UserLogIn
@@ -10,7 +11,7 @@ import okhttp3.MultipartBody
 
 interface WallpaperCollectRepo {
     suspend fun userRegister(user: UserRegister): Status
-    suspend fun userGoogleRegister() :Url
+    suspend fun userGoogleRegister(token :Token) :Status
     suspend fun userFacebookRegister() :Url
     suspend fun userLogin(user: UserLogIn): Status
     suspend fun userGoogleLogin():Url

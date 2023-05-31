@@ -5,12 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.wallpapercollect.api.models.Status
 import com.example.wallpapercollect.api.models.Url
 import com.example.wallpapercollect.api.models.UserLogIn
+import com.example.wallpapercollect.presentation.MainActivity
 import com.example.wallpapercollect.repository.WallpaperCollectRepoImpl
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 
 
 @HiltViewModel
@@ -24,6 +25,8 @@ class Login @Inject constructor(
     var loginEmailDefault = _loginEmailDefault
     var loginGoogleSession = _loginGoogleSession
     var loginFacebookSession = _loginFacebookSession
+
+
 
     fun getLoginEmailDefault(userLogin: UserLogIn){
         viewModelScope.launch {

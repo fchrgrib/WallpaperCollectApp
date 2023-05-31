@@ -4,6 +4,7 @@ package com.example.wallpapercollect.presentation.viewmodel.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.wallpapercollect.api.models.Status
+import com.example.wallpapercollect.api.models.Token
 import com.example.wallpapercollect.api.models.Url
 import com.example.wallpapercollect.api.models.UserRegister
 import com.example.wallpapercollect.repository.WallpaperCollectRepoImpl
@@ -20,11 +21,11 @@ class Register @Inject constructor(
     private val wallpaperCollectRepoImpl: WallpaperCollectRepoImpl
 ): ViewModel() {
     private val _registerEmailDefaultStatus = MutableStateFlow(Status(""))
-    private val _registerGoogleSession = MutableStateFlow(Url("", ""))
+    private val _registerGoogleSession = MutableStateFlow(Status(""))
     private val _registerFacebookSession = MutableStateFlow(Url("", ""))
 
     val registerEmailDefaultStatus: Flow<Status> = _registerEmailDefaultStatus
-    val registerGoogleSession : Flow<Url> = _registerGoogleSession
+    val registerGoogleSession : Flow<Status> = _registerGoogleSession
     val registerFacebookSession: Flow<Url> = _registerFacebookSession
 
     fun postRegisterEmailDefault(userRegister: UserRegister){
@@ -38,13 +39,13 @@ class Register @Inject constructor(
         }
     }
 
-    fun getRegisterGoogleSession(){
+    fun postRegisterGoogleSession(token :Token){
         viewModelScope.launch {
             try {
-                val response = wallpaperCollectRepoImpl.userGoogleRegister()
+                val response = wallpaperCollectRepoImpl.userGoogleRegister(token)
                 _registerGoogleSession.emit(response)
             }catch (e : Exception){
-                _registerGoogleSession.emit(Url("",e.message.toString()))
+                _registerGoogleSession.emit(Status(e.message.toString()))
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.example.wallpapercollect.api
 
 import com.example.wallpapercollect.api.models.Status
+import com.example.wallpapercollect.api.models.Token
 import com.example.wallpapercollect.api.models.Url
 import com.example.wallpapercollect.api.models.UserDescription
 import com.example.wallpapercollect.api.models.UserRegister
@@ -22,8 +23,10 @@ interface WallpaperCollectAPI {
         @Body user: UserRegister
     ): Status
 
-    @GET(ApiEndPoints.REGISTER_GOOGLE_SESSION)
-    suspend fun userGoogleRegister() : Url
+    @POST(ApiEndPoints.REGISTER_GOOGLE_SESSION)
+    suspend fun userGoogleRegister(
+        @Body token: Token
+    ) : Status
 
     @GET(ApiEndPoints.REGISTER_FACEBOOK_SESSION)
     suspend fun userFacebookRegister() : Url

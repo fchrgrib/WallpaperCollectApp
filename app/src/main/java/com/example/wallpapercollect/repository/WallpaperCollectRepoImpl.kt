@@ -2,6 +2,7 @@ package com.example.wallpapercollect.repository
 
 import com.example.wallpapercollect.api.WallpaperCollectAPI
 import com.example.wallpapercollect.api.models.Status
+import com.example.wallpapercollect.api.models.Token
 import com.example.wallpapercollect.api.models.Url
 import com.example.wallpapercollect.api.models.UserDescription
 import com.example.wallpapercollect.api.models.UserLogIn
@@ -16,8 +17,8 @@ class WallpaperCollectRepoImpl @Inject constructor(
         return wallpaperCollectAPI.userRegister(user)
     }
 
-    override suspend fun userGoogleRegister(): Url {
-        return wallpaperCollectAPI.userGoogleRegister()
+    override suspend fun userGoogleRegister(token :Token): Status {
+        return wallpaperCollectAPI.userGoogleRegister(token)
     }
 
     override suspend fun userFacebookRegister(): Url {
