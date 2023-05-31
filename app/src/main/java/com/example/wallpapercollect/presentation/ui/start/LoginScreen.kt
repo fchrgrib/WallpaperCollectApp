@@ -1,13 +1,13 @@
-package com.example.wallpapercollect.presentation.ui.firstviews.getstarted
+package com.example.wallpapercollect.presentation.ui.start
 
 import android.annotation.SuppressLint
-import android.webkit.WebView
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -20,8 +20,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,8 +29,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.wallpapercollect.R
 import com.example.wallpapercollect.api.models.Status
+import com.example.wallpapercollect.api.models.Token
 import com.example.wallpapercollect.api.models.Url
 import com.example.wallpapercollect.api.models.UserLogIn
+import com.example.wallpapercollect.presentation.MainActivity
 import com.example.wallpapercollect.presentation.ui.navigation.NavigationRouters
 import com.example.wallpapercollect.presentation.ui.theme.blue500
 import com.example.wallpapercollect.presentation.ui.theme.brand500
@@ -41,25 +43,34 @@ import com.example.wallpapercollect.presentation.ui.utils.logResTripButton
 import com.example.wallpapercollect.presentation.ui.utils.textFieldLogRes
 import com.example.wallpapercollect.presentation.ui.utils.textFieldLogResPass
 import com.example.wallpapercollect.presentation.ui.utils.textHeaderLogRes
-import com.example.wallpapercollect.presentation.viewmodel.auth.Login
+import com.example.wallpapercollect.presentation.viewmodels.auth.Login
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "SetJavaScriptEnabled")
-@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LoginScreen(
     login: Login = hiltViewModel(),
     navHostController: NavHostController
 ) {
-    val webView = WebView(LocalContext.current)
-    val webViewSetting = webView.settings
-    webViewSetting.javaScriptEnabled = true
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = {}
+    )
+    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(stringResource(R.string.google_token))
+        .requestProfile()
+        .requestEmail()
+        .build()
+
+    val gsc = GoogleSignIn.getClient(MainActivity.instance,gso)
+    val account: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(MainActivity.instance)
 
 
     val statusLoginEmailDefaultSession = login.loginEmailDefault.collectAsState(Status("")).value
-    val statusLoginGoogleSession = login.loginGoogleSession.collectAsState(Url("","")).value
+    val statusLoginGoogleSession = login.loginGoogleSession.collectAsState(Status("")).value
     val statusLoginFacebookSession = login.loginFacebookSession.collectAsState(Url("","")).value
 
     var isLoginEmailDefaultSessionClicked by rememberSaveable { mutableStateOf(false) }
@@ -88,38 +99,33 @@ fun LoginScreen(
                     )
                 }
             },
-            content = { BodyLoginScreen(
-                onClickLoginEmailDefault = {
-                    login.getLoginEmailDefault(
-                        UserLogIn(
-                            email = email,
-                            password = password
+            content = {
+                    BodyLoginScreen(
+                    onClickLoginEmailDefault = {
+                        login.getLoginEmailDefault(
+                            UserLogIn(
+                                email = email,
+                                password = password
+                            )
                         )
-                    )
-                    isLoginEmailDefaultSessionClicked = true
-                                           },
-                onClickLoginFacebookSession = {
-                    login.getLoginFacebookSession()
-                    isLoginFacebookSessionClicked = true
-                                              },
-                onClickLoginGoogleSession = {
-                    login.getLoginGoogleSession()
-                    isLoginGoogleSessionClicked = true
-
-                                            },
-                email = {email = it},
-                password = {password = it},
-                navHostController = navHostController
-            )}
+                        isLoginEmailDefaultSessionClicked = true
+                                               },
+                    onClickLoginFacebookSession = {
+                        login.getLoginFacebookSession()
+                        isLoginFacebookSessionClicked = true
+                                                  },
+                    onClickLoginGoogleSession = {
+                        isLoginGoogleSessionClicked = true
+                        launcher.launch(gsc.signInIntent)
+                                                },
+                    email = {email = it},
+                    password = {password = it},
+                    navHostController = navHostController
+                )
+            }
         )
     }
-    if(
-        (statusLoginEmailDefaultSession.status != "" && statusLoginEmailDefaultSession.status != "ok") &&
-        (isLoginEmailDefaultSessionClicked)
-    ){
-        //TODO do something in this condition
-    }
-
+    //TODO do something if user insert invalid data
     if(
         statusLoginEmailDefaultSession.status == "ok"&&
         isLoginEmailDefaultSessionClicked
@@ -129,22 +135,39 @@ fun LoginScreen(
         navHostController.navigate(NavigationRouters.WALLPAPER){
             popUpTo(NavigationRouters.LOGIN){ inclusive = true}
         }
+        return
     }
+
+
     if(
+        account!!.idToken != ""&&
         statusLoginGoogleSession.status == "ok"&&
         isLoginGoogleSessionClicked
     ){
         isLoginGoogleSessionClicked = false
 
-        webView.loadUrl(statusLoginGoogleSession.url)
+        navHostController.navigate(NavigationRouters.WALLPAPER){
+            popUpTo(NavigationRouters.LOGIN){inclusive = true}
+        }
+        return
     }
+    if(
+        account.idToken != ""&&
+        isLoginGoogleSessionClicked
+    ){
+        login.postLoginGoogleSession(Token(account.idToken ?: ""))
+        return
+    }
+
+
     if(
         statusLoginFacebookSession.status == "ok"&&
         isLoginFacebookSessionClicked
     ){
         isLoginFacebookSessionClicked = false
 
-        webView.loadUrl(statusLoginFacebookSession.url)
+//        TODO make facebook login session can use as mobile
+        return
     }
 }
 
@@ -157,7 +180,6 @@ fun BodyLoginScreen(
     password: (String) -> Unit,
     navHostController: NavHostController
 ) {
-
 
     Column(modifier = Modifier.padding(top = 114.dp, start = 24.dp, end = 24.dp)) {
 
@@ -225,11 +247,10 @@ fun BodyLoginScreen(
                     {navHostController.navigate(NavigationRouters.REGISTER) }
                 )
             }
-
-
-
-
         }
+
     }
+
+
 }
 

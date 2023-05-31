@@ -1,13 +1,12 @@
-package com.example.wallpapercollect.presentation.viewmodel.auth
+package com.example.wallpapercollect.presentation.viewmodels.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.wallpapercollect.api.models.Status
+import com.example.wallpapercollect.api.models.Token
 import com.example.wallpapercollect.api.models.Url
 import com.example.wallpapercollect.api.models.UserLogIn
-import com.example.wallpapercollect.presentation.MainActivity
 import com.example.wallpapercollect.repository.WallpaperCollectRepoImpl
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -19,7 +18,7 @@ class Login @Inject constructor(
     private val wallpaperCollectRepoImpl: WallpaperCollectRepoImpl
 ):ViewModel() {
     private val _loginEmailDefault = MutableStateFlow(Status(""))
-    private val _loginGoogleSession = MutableStateFlow(Url("",""))
+    private val _loginGoogleSession = MutableStateFlow(Status(""))
     private val _loginFacebookSession = MutableStateFlow(Url("",""))
 
     var loginEmailDefault = _loginEmailDefault
@@ -39,13 +38,13 @@ class Login @Inject constructor(
         }
     }
 
-    fun getLoginGoogleSession(){
+    fun postLoginGoogleSession(token :Token){
         viewModelScope.launch {
             try {
-                val response = wallpaperCollectRepoImpl.userGoogleLogin()
+                val response = wallpaperCollectRepoImpl.userGoogleLogin(token)
                 _loginGoogleSession.emit(response)
             }catch (e :Exception){
-                _loginGoogleSession.emit(Url("",e.message.toString()))
+                _loginGoogleSession.emit(Status(""))
             }
         }
     }

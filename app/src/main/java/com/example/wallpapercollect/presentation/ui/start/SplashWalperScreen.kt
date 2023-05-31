@@ -1,8 +1,7 @@
-package com.example.wallpapercollect.presentation.ui.firstviews.getstarted
+package com.example.wallpapercollect.presentation.ui.start
 
 import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,7 +16,9 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(navController: NavController) {
+
     val context = LocalContext.current
+
     SplashLightV3()
 
     var navigateStart by remember{ mutableStateOf(false) }
@@ -27,27 +28,25 @@ fun SplashScreen(navController: NavController) {
 
     }
 
-    DisposableEffect(navigateStart) {
-        if (navigateStart) {
-            if(isFirstTimeUser(context)){
-                markUserAsNotFirstTime(context)
-                navController.navigate(NavigationRouters.GET_STARTED){
-                    popUpTo(NavigationRouters.SPLASHSCREEN){
-                        inclusive = true
-                    }
+    if (navigateStart) {
+        if(isFirstTimeUser(context)){
+            markUserAsNotFirstTime(context)
+            navController.navigate(NavigationRouters.GET_STARTED){
+                popUpTo(NavigationRouters.SPLASHSCREEN){
+                    inclusive = true
                 }
-            }else if(!isFirstTimeUser(context)){
-                navController.navigate(NavigationRouters.LOGIN){
-                    popUpTo(NavigationRouters.SPLASHSCREEN){
-                        inclusive = true
-                    }
-                }
-
             }
-            // TODO make navigation if user has a token in his cookies
+        }else if(!isFirstTimeUser(context)){
+            navController.navigate(NavigationRouters.LOGIN){
+                popUpTo(NavigationRouters.SPLASHSCREEN){
+                    inclusive = true
+                }
+            }
+
         }
-        onDispose {  }
+        // TODO make navigation if user has a token in his cookies
     }
+
 }
 
 private fun isFirstTimeUser(context : Context): Boolean {

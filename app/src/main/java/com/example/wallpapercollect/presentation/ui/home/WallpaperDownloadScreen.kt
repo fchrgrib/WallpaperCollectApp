@@ -35,7 +35,6 @@ import com.example.wallpapercollect.R
 import com.example.wallpapercollect.presentation.ui.theme.brand500
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun downloadScreen(id : String) {

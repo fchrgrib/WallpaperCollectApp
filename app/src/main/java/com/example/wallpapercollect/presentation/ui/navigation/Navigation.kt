@@ -6,10 +6,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.wallpapercollect.presentation.ui.firstviews.getstarted.GetStarted
-import com.example.wallpapercollect.presentation.ui.firstviews.getstarted.LoginScreen
-import com.example.wallpapercollect.presentation.ui.firstviews.getstarted.RegisterEmailScreen
-import com.example.wallpapercollect.presentation.ui.firstviews.getstarted.SplashScreen
+import com.example.wallpapercollect.presentation.ui.start.GetStarted
+import com.example.wallpapercollect.presentation.ui.start.LoginScreen
+import com.example.wallpapercollect.presentation.ui.start.RegisterEmailScreen
+import com.example.wallpapercollect.presentation.ui.start.SplashScreen
 import com.example.wallpapercollect.presentation.ui.home.downloadScreen
 import com.example.wallpapercollect.presentation.ui.home.screenProfile
 

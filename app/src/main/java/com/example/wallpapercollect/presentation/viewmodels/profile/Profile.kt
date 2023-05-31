@@ -1,8 +1,7 @@
-package com.example.wallpapercollect.presentation.viewmodel.profile
+package com.example.wallpapercollect.presentation.viewmodels.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.wallpapercollect.api.models.Status
 import com.example.wallpapercollect.api.models.UserDescription
 import com.example.wallpapercollect.repository.WallpaperCollectRepoImpl
 import dagger.hilt.android.lifecycle.HiltViewModel

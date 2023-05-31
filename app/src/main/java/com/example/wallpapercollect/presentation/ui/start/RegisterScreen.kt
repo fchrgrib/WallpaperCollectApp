@@ -1,4 +1,4 @@
-package com.example.wallpapercollect.presentation.ui.firstviews.getstarted
+package com.example.wallpapercollect.presentation.ui.start
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -49,7 +49,7 @@ import com.example.wallpapercollect.presentation.ui.utils.logResButton
 import com.example.wallpapercollect.presentation.ui.utils.textFieldLogRes
 import com.example.wallpapercollect.presentation.ui.utils.textFieldLogResPass
 import com.example.wallpapercollect.presentation.ui.utils.textHeaderLogRes
-import com.example.wallpapercollect.presentation.viewmodel.auth.Register
+import com.example.wallpapercollect.presentation.viewmodels.auth.Register
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -316,4 +316,6 @@ fun BodyRegisterEmail(
         }
 
     }
+
+
 }

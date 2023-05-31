@@ -1,7 +1,11 @@
-package com.example.wallpapercollect.presentation.ui.firstviews.getstarted
+@file:JvmName("SplashWalperScreenKt")
+
+package com.example.wallpapercollect.presentation.ui.start
 
 import android.annotation.SuppressLint
 import android.webkit.WebView
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,32 +28,49 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.wallpapercollect.R
+import com.example.wallpapercollect.api.models.Status
+import com.example.wallpapercollect.api.models.Token
 import com.example.wallpapercollect.api.models.Url
+import com.example.wallpapercollect.presentation.MainActivity
 import com.example.wallpapercollect.presentation.ui.navigation.NavigationRouters
 import com.example.wallpapercollect.presentation.ui.utils.logResTripButton
 import com.example.wallpapercollect.presentation.ui.theme.blue500
 import com.example.wallpapercollect.presentation.ui.theme.brand500
 import com.example.wallpapercollect.presentation.ui.theme.gray40
 import com.example.wallpapercollect.presentation.ui.theme.interFont
-import com.example.wallpapercollect.presentation.viewmodel.auth.Register
+import com.example.wallpapercollect.presentation.viewmodels.auth.Register
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 
-@SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun GetStarted(navController: NavController, register: Register = hiltViewModel()) {
 
-    val webView = WebView(LocalContext.current)
-    webView.settings.javaScriptEnabled = true
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = {}
+    )
+    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(stringResource(R.string.google_token))
+        .requestProfile()
+        .requestEmail()
+        .build()
+
+    val gsc = GoogleSignIn.getClient(MainActivity.instance,gso)
+    val account: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(MainActivity.instance)
+
 
     var isRegisterGoogleSessionClicked by rememberSaveable { mutableStateOf(false) }
     var isRegisterFacebookSessionClicked by rememberSaveable { mutableStateOf(false) }
 
-    val statusRegisterGoogleSession = register.registerGoogleSession.collectAsState(Url("","")).value
+    val statusRegisterGoogleSession = register.registerGoogleSession.collectAsState(Status("")).value
     val statusRegisterFacebookSession = register.registerFacebookSession.collectAsState(Url("","")).value
 
 
@@ -100,8 +121,8 @@ fun GetStarted(navController: NavController, register: Register = hiltViewModel(
                 nameIcon = "google",
                 textButton = "Continue With Google"
             ) {
-//                register.getRegisterGoogleSession()
                 isRegisterGoogleSessionClicked = true
+                launcher.launch(gsc.signInIntent)
             }
 
             logResTripButton(
@@ -113,7 +134,7 @@ fun GetStarted(navController: NavController, register: Register = hiltViewModel(
                 nameIcon = "facebook",
                 textButton = "Continue With Facebook"
             ) {
-//                register.getRegisterGoogleSession()
+//                TODO make facebook login session can use in mobile app
                 isRegisterFacebookSessionClicked = true
             }
 
@@ -129,22 +150,34 @@ fun GetStarted(navController: NavController, register: Register = hiltViewModel(
         Spacer(modifier = Modifier.padding(top = 15.dp))
     }
 
-//    if (
-//        statusRegisterGoogleSession.status == "ok"&&
-//        isRegisterGoogleSessionClicked
-//    ){
-//        isRegisterGoogleSessionClicked = false
-//
-//        webView.loadUrl(statusRegisterGoogleSession.url)
-//        return
-//    }
+    if (
+        account!!.idToken != ""&&
+        statusRegisterGoogleSession.status == "ok"&&
+        isRegisterGoogleSessionClicked
+    ){
+        isRegisterGoogleSessionClicked = false
+
+        navController.navigate(NavigationRouters.WALLPAPER){
+            popUpTo(NavigationRouters.GET_STARTED){inclusive = true}
+        }
+        return
+    }
+    if (
+        account.idToken != ""&&
+        isRegisterGoogleSessionClicked
+    ){
+        register.postRegisterGoogleSession(Token(account.idToken ?: ""))
+        return
+    }
+
+
     if (
         statusRegisterFacebookSession.status == "ok"&&
         isRegisterFacebookSessionClicked
     ){
         isRegisterFacebookSessionClicked = false
 
-        webView.loadUrl(statusRegisterFacebookSession.url)
+//        webView.loadUrl(statusRegisterFacebookSession.url)
         return
     }
 }
