@@ -1,4 +1,4 @@
-package com.example.wallpapercollect.presentation.ui.firstviews.getstarted
+package com.example.wallpapercollect.presentation.ui.firstviews.start
 
 import android.content.Context
 import androidx.compose.runtime.Composable

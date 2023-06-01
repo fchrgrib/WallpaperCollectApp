@@ -1,5 +1,6 @@
 package com.example.wallpapercollect.repository
 
+import com.example.wallpapercollect.api.models.ImagesCollections
 import com.example.wallpapercollect.api.models.Status
 import com.example.wallpapercollect.api.models.Token
 import com.example.wallpapercollect.api.models.Url
@@ -18,7 +19,7 @@ interface WallpaperCollectRepo {
     suspend fun userLogout()
 
 
-    suspend fun wallpaperCollection():Any
+    suspend fun wallpaperCollection():ImagesCollections
     suspend fun wallpaperUpload(image : MultipartBody.Part): Status
 
 

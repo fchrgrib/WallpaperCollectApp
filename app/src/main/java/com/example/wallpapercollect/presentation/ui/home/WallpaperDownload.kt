@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -35,10 +34,9 @@ import com.example.wallpapercollect.R
 import com.example.wallpapercollect.presentation.ui.theme.brand500
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun downloadScreen(id : String) {
+fun DownloadScreen(id : String) {
     Scaffold(
         topBar = {
             Row(horizontalArrangement = Arrangement.SpaceBetween
@@ -66,21 +64,15 @@ fun downloadScreen(id : String) {
                 )
             }
         },
-        content = { downloadBody(
+        content = { DownloadBody(
             {/*TODO make download API*/},
             {/*TODO make favourite API*/}
         ) }
     )
 }
 
-@Preview
 @Composable
-fun prevDownloadScreen() {
-//    downloadScreen()
-}
-
-@Composable
-fun downloadBody(
+fun DownloadBody(
     onClickDownload : () -> Unit,
     onClickFavourite : () -> Unit
 ) {
@@ -104,7 +96,7 @@ fun downloadBody(
         ) {
 
             Button(
-                onClick = { onClickDownload  },
+                onClick =  onClickDownload  ,
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -127,7 +119,7 @@ fun downloadBody(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(bottom = 90.dp)
-                    .clickable { onClickFavourite },
+                    .clickable(onClick = onClickFavourite),
                 tint = Color.Unspecified
             )
         }
@@ -137,7 +129,7 @@ fun downloadBody(
 @Preview
 @Composable
 fun prevDownloadBody() {
-    downloadBody(
+    DownloadBody(
         { Log.d("download-button", "clicked")},
         {Log.d("favourite-button", "clicked")}
     )

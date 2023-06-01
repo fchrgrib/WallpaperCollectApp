@@ -1,5 +1,6 @@
 package com.example.wallpapercollect.api
 
+import com.example.wallpapercollect.api.models.ImagesCollections
 import com.example.wallpapercollect.api.models.Status
 import com.example.wallpapercollect.api.models.Token
 import com.example.wallpapercollect.api.models.Url
@@ -51,7 +52,7 @@ interface WallpaperCollectAPI {
 
     /**WALLPAPER PAGE**/
     @GET(ApiEndPoints.WALLPAPER_COLLECTION)
-    suspend fun wallpaperCollection(): Any
+    suspend fun wallpaperCollection(): ImagesCollections
 
     @Multipart
     @POST(ApiEndPoints.UPLOAD_WALLPAPER)

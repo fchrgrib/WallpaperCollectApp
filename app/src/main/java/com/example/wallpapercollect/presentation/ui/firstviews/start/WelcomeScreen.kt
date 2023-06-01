@@ -1,4 +1,4 @@
-package com.example.wallpapercollect.presentation.ui.firstviews.getstarted
+package com.example.wallpapercollect.presentation.ui.firstviews.start
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts

@@ -6,11 +6,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.wallpapercollect.presentation.ui.firstviews.getstarted.GetStarted
-import com.example.wallpapercollect.presentation.ui.firstviews.getstarted.LoginScreen
-import com.example.wallpapercollect.presentation.ui.firstviews.getstarted.RegisterEmailScreen
-import com.example.wallpapercollect.presentation.ui.firstviews.getstarted.SplashScreen
-import com.example.wallpapercollect.presentation.ui.home.downloadScreen
+import com.example.wallpapercollect.presentation.ui.firstviews.start.GetStarted
+import com.example.wallpapercollect.presentation.ui.firstviews.start.LoginScreen
+import com.example.wallpapercollect.presentation.ui.firstviews.start.RegisterEmailScreen
+import com.example.wallpapercollect.presentation.ui.firstviews.start.SplashScreen
+import com.example.wallpapercollect.presentation.ui.home.DownloadScreen
 import com.example.wallpapercollect.presentation.ui.home.screenProfile
 
 
@@ -41,7 +41,7 @@ fun WallpaperCollectAppNavHost(
             screenProfile(navHostController = navController)
         }
         composable(NavigationRouters.WALLPAPER+"/{id}"){
-            it.arguments?.getString("id")?.let { it1 -> downloadScreen(id = it1) }
+            it.arguments?.getString("id")?.let { it1 -> DownloadScreen(id = it1) }
         }
         //TODO make wallpaper page
     }

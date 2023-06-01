@@ -1,6 +1,7 @@
 package com.example.wallpapercollect.repository
 
 import com.example.wallpapercollect.api.WallpaperCollectAPI
+import com.example.wallpapercollect.api.models.ImagesCollections
 import com.example.wallpapercollect.api.models.Status
 import com.example.wallpapercollect.api.models.Token
 import com.example.wallpapercollect.api.models.Url
@@ -41,7 +42,7 @@ class WallpaperCollectRepoImpl @Inject constructor(
         return wallpaperCollectAPI.userLogout()
     }
 
-    override suspend fun wallpaperCollection(): Any {
+    override suspend fun wallpaperCollection(): ImagesCollections {
         return wallpaperCollectAPI.wallpaperCollection()
     }
 

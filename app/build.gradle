@@ -115,4 +115,8 @@ dependencies {
     //OAUTH 2
     implementation 'com.google.android.gms:play-services-auth:20.5.0'
 
+    //ASYNC IMAGE
+    implementation "io.coil-kt:coil-compose:2.4.0"
+    implementation "io.coil-kt:coil-gif:2.4.0"
+
 }
