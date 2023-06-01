@@ -29,8 +29,8 @@ class WallpaperCollectRepoImpl @Inject constructor(
         return wallpaperCollectAPI.userLogin(user)
     }
 
-    override suspend fun userGoogleLogin(): Url {
-        return wallpaperCollectAPI.userGoogleLogin()
+    override suspend fun userGoogleLogin(token: Token): Status {
+        return wallpaperCollectAPI.userGoogleLogin(token)
     }
 
     override suspend fun userFacebookLogin(): Url {

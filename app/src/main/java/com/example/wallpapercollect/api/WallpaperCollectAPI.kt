@@ -36,8 +36,10 @@ interface WallpaperCollectAPI {
         @Body user: UserLogIn
     ): Status
 
-    @GET(ApiEndPoints.LOGIN_GOOGLE_SESSION)
-    suspend fun userGoogleLogin() : Url
+    @POST(ApiEndPoints.LOGIN_GOOGLE_SESSION)
+    suspend fun userGoogleLogin(
+        @Body token: Token
+    ) : Status
 
     @GET(ApiEndPoints.LOGIN_FACEBOOK_SESSION)
     suspend fun userFacebookLogin() : Url

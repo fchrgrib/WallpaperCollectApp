@@ -1,4 +1,4 @@
-package com.example.wallpapercollect.presentation.viewmodel.auth
+package com.example.wallpapercollect.presentation.viewmodels.auth
 
 
 import androidx.lifecycle.ViewModel
@@ -12,7 +12,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
 import javax.inject.Inject
 
 

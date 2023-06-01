@@ -1,5 +1,6 @@
 package com.example.wallpapercollect.presentation.ui.firstviews.getstarted
 
+
 import android.annotation.SuppressLint
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -49,7 +50,7 @@ import com.example.wallpapercollect.presentation.ui.utils.logResButton
 import com.example.wallpapercollect.presentation.ui.utils.textFieldLogRes
 import com.example.wallpapercollect.presentation.ui.utils.textFieldLogResPass
 import com.example.wallpapercollect.presentation.ui.utils.textHeaderLogRes
-import com.example.wallpapercollect.presentation.viewmodel.auth.Register
+import com.example.wallpapercollect.presentation.viewmodels.auth.Register
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -67,10 +68,10 @@ fun RegisterEmailScreen(
         onResult = {}
     )
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-    .requestIdToken(stringResource(R.string.google_token))
-    .requestProfile()
-    .requestEmail()
-    .build()
+        .requestIdToken(stringResource(R.string.google_token))
+        .requestProfile()
+        .requestEmail()
+        .build()
 
     val gsc = GoogleSignIn.getClient(MainActivity.instance,gso)
     val account: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(MainActivity.instance)
@@ -120,17 +121,17 @@ fun RegisterEmailScreen(
                         email = email
                     )
                 )
-                                         isRegisterEmailDefaultSessionClicked = true
-                                         },
+                    isRegisterEmailDefaultSessionClicked = true
+                },
                 onClickRegisterGoogle = {
                     isRegisterGoogleSessionClicked = true
                     launcher.launch(gsc.signInIntent)
 
-                                        },
+                },
                 onClickRegisterFacebook = {
                     register.getRegisterFacebookSession()
                     isRegisterFacebookSessionClicked = true
-                                          },
+                },
                 navController = navController
             )
             }
@@ -205,19 +206,19 @@ fun BodyRegisterEmail(
         ) {
 
 
-            textFieldLogRes(placeHolder = "Enter your Email", content = {email(it)})
+            textFieldLogRes(placeHolder = "Enter your Email", content = { email(it) })
             Spacer(modifier = Modifier.padding(top = 16.dp))
 
-            textFieldLogRes(placeHolder = "Full name", content = {fullName(it)})
+            textFieldLogRes(placeHolder = "Full name", content = { fullName(it) })
             Spacer(modifier = Modifier.padding(top = 16.dp))
 
-            textFieldLogRes(placeHolder = "Phone number", content = {phoneNumber(it)})
+            textFieldLogRes(placeHolder = "Phone number", content = { phoneNumber(it) })
             Spacer(modifier = Modifier.padding(top = 16.dp))
 
-            textFieldLogResPass(placeHolder = "Password", content = {password(it)})
+            textFieldLogResPass(placeHolder = "Password", content = { password(it) })
             Spacer(modifier = Modifier.padding(top = 16.dp))
 
-            textFieldLogRes(placeHolder = "Confirm Password", content = {confirmPassword(it)})
+            textFieldLogRes(placeHolder = "Confirm Password", content = { confirmPassword(it) })
             Spacer(modifier = Modifier.padding(top = 28.dp))
 
             logResButton(textButton = "Register", onClickable = onClickRegisterDefault)
@@ -234,7 +235,7 @@ fun BodyRegisterEmail(
             Spacer(modifier = Modifier.padding(top = 24.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                 Button(
-                    onClick = onClickRegisterFacebook ,
+                    onClick = onClickRegisterFacebook,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = blue500
                     ),
@@ -243,8 +244,10 @@ fun BodyRegisterEmail(
                         .height(56.dp)
                         .weight(7f)
                 ) {
-                    Row(horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Icon(
                             painter = painterResource(id = R.drawable.facebook_logo),
                             contentDescription = "facebook",
@@ -261,9 +264,11 @@ fun BodyRegisterEmail(
                     }
 
                 }
-                Spacer(modifier = Modifier
-                    .padding(start = 17.dp)
-                    .weight(1f))
+                Spacer(
+                    modifier = Modifier
+                        .padding(start = 17.dp)
+                        .weight(1f)
+                )
                 Button(
                     onClick = onClickRegisterGoogle,
                     colors = ButtonDefaults.buttonColors(
@@ -275,8 +280,10 @@ fun BodyRegisterEmail(
                         .border(1.dp, gray40, RoundedCornerShape(10.dp)),
                     shape = RoundedCornerShape(10.dp)
                 ) {
-                    Row(horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Icon(
                             painter = painterResource(id = R.drawable.google_logo),
                             contentDescription = "google",
@@ -310,10 +317,12 @@ fun BodyRegisterEmail(
                     color = brand500,
                     fontSize = 12.sp,
                     modifier = Modifier.clickable
-                    {navController.navigate(NavigationRouters.LOGIN){launchSingleTop = true}}
+                    { navController.navigate(NavigationRouters.LOGIN) { launchSingleTop = true } }
                 )
             }
         }
 
     }
+
+
 }

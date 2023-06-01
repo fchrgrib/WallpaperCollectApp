@@ -1,6 +1,5 @@
 package com.example.wallpapercollect.repository
 
-import android.widget.TextView.SavedState
 import com.example.wallpapercollect.api.models.Status
 import com.example.wallpapercollect.api.models.Token
 import com.example.wallpapercollect.api.models.Url
@@ -14,7 +13,7 @@ interface WallpaperCollectRepo {
     suspend fun userGoogleRegister(token :Token) :Status
     suspend fun userFacebookRegister() :Url
     suspend fun userLogin(user: UserLogIn): Status
-    suspend fun userGoogleLogin():Url
+    suspend fun userGoogleLogin(token: Token):Status
     suspend fun userFacebookLogin():Url
     suspend fun userLogout()
 
