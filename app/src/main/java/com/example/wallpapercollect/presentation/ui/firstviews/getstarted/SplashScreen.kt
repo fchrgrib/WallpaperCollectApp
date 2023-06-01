@@ -11,6 +11,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.example.wallpapercollect.presentation.ui.navigation.NavigationRouters
+import com.example.wallpapercollect.splashlightv3.SplashLightV3
 //import com.example.wallpapercollect.splashlightv3.SplashLightV3
 import kotlinx.coroutines.delay
 
@@ -18,7 +19,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun SplashScreen(navController: NavController) {
     val context = LocalContext.current
-//    SplashLightV3()
+    SplashLightV3()
 
     var navigateStart by remember{ mutableStateOf(false) }
     LaunchedEffect(true){

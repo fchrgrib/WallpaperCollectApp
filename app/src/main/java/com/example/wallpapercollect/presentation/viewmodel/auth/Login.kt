@@ -1,4 +1,4 @@
-package com.example.wallpapercollect.presentation.viewmodels.auth
+package com.example.wallpapercollect.presentation.viewmodel.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -50,7 +50,7 @@ import com.example.wallpapercollect.presentation.ui.utils.logResButton
 import com.example.wallpapercollect.presentation.ui.utils.textFieldLogRes
 import com.example.wallpapercollect.presentation.ui.utils.textFieldLogResPass
 import com.example.wallpapercollect.presentation.ui.utils.textHeaderLogRes
-import com.example.wallpapercollect.presentation.viewmodels.auth.Register
+import com.example.wallpapercollect.presentation.viewmodel.auth.Register
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions

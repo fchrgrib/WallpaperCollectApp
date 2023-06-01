@@ -1,4 +1,4 @@
-package com.example.wallpapercollect.presentation.viewmodels.profile
+package com.example.wallpapercollect.presentation.viewmodel.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
