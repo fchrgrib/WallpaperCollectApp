@@ -26,7 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import com.example.wallpapercollect.R
 import com.example.wallpapercollect.api.models.Status
 import com.example.wallpapercollect.api.models.Token
@@ -53,7 +53,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 @Composable
 fun LoginScreen(
     login: Login = hiltViewModel(),
-    navHostController: NavHostController
+    navController: NavController
 ) {
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
@@ -93,7 +93,7 @@ fun LoginScreen(
                         modifier = Modifier
                             .padding(16.dp)
                             .clickable {
-                                navHostController.popBackStack()
+                                navController.popBackStack()
                             },
                         tint = Color.Unspecified
                     )
@@ -120,7 +120,7 @@ fun LoginScreen(
                     },
                     email = {email = it},
                     password = {password = it},
-                    navHostController = navHostController
+                    navController = navController
                 )
             }
         )
@@ -132,7 +132,7 @@ fun LoginScreen(
     ){
         isLoginEmailDefaultSessionClicked = false
 
-        navHostController.navigate(NavigationRouters.WALLPAPER){
+        navController.navigate(NavigationRouters.WALLPAPER){
             popUpTo(NavigationRouters.LOGIN){ inclusive = true}
         }
         return
@@ -146,7 +146,7 @@ fun LoginScreen(
     ){
         isLoginGoogleSessionClicked = false
 
-        navHostController.navigate(NavigationRouters.WALLPAPER){
+        navController.navigate(NavigationRouters.WALLPAPER){
             popUpTo(NavigationRouters.LOGIN){inclusive = true}
         }
         return
@@ -178,7 +178,7 @@ fun BodyLoginScreen(
     onClickLoginGoogleSession : () -> Unit,
     email : (String) -> Unit,
     password: (String) -> Unit,
-    navHostController: NavHostController
+    navController: NavController
 ) {
 
     Column(modifier = Modifier.padding(top = 114.dp, start = 24.dp, end = 24.dp)) {
@@ -244,7 +244,7 @@ fun BodyLoginScreen(
                     color = brand500,
                     fontSize = 12.sp,
                     modifier = Modifier.clickable
-                    {navHostController.navigate(NavigationRouters.REGISTER) }
+                    {navController.navigate(NavigationRouters.REGISTER) }
                 )
             }
         }

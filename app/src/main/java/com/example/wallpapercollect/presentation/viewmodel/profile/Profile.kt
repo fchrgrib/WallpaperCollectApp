@@ -19,6 +19,9 @@ class Profile @Inject constructor(
 
     val profileInfo = _profileInfo
 
+    init {
+        getProfileInfo()
+    }
     fun getProfileInfo(){
         viewModelScope.launch {
             try {

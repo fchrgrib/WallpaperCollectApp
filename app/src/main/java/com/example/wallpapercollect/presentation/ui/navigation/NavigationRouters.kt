@@ -10,4 +10,6 @@ object NavigationRouters {
     //MAIN PAGE
     const val WALLPAPER = "wallpaper"
     const val PROFILE = "profile"
+    const val PRIVACY = "privacy"
+    const val AUTHOR = "author"
 }

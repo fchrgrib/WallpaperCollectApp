@@ -2,7 +2,6 @@ package com.example.wallpapercollect.presentation.ui.home
 
 import android.annotation.SuppressLint
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -39,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.wallpapercollect.R
 import com.example.wallpapercollect.presentation.ui.theme.brand500
 import com.example.wallpapercollect.presentation.ui.utils.boxContent
@@ -47,11 +47,11 @@ import com.example.wallpapercollect.presentation.viewmodel.profile.Profile
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun screenProfile(
-    navHostController: NavController,
+fun ScreenProfile(
+    navController: NavController,
     profile: Profile = hiltViewModel()
 ) {
-    var profileInfo = profile.profileInfo.collectAsState().value
+    val profileInfo = profile.profileInfo.collectAsState().value
     Scaffold(
         topBar = {
             Row {
@@ -60,17 +60,18 @@ fun screenProfile(
                     contentDescription = "Back",
                     modifier = Modifier
                         .padding(16.dp)
-                        .clickable { navHostController.popBackStack() },
+                        .clickable { navController.popBackStack() },
                     tint = Color.Unspecified
                 )
             }
         },
-        content = { profileBody(
+        content = { ProfileBody(
             userName = profileInfo.userName,
             email = profileInfo.email,
             phoneNumber = profileInfo.phoneNumber,
             photoProfile = profileInfo.photoProfile,
-            location = "Indonesian"
+            location = "Indonesian",
+            navController = navController
         ) }
     )
 
@@ -82,22 +83,23 @@ fun prevScreenProfile() {
 //    screenProfile()
 }
 @Composable
-fun profileBody(
+fun ProfileBody(
     userName: String,
-    photoProfile: String, // TODO make async photo profile
+    photoProfile: String,
     phoneNumber: String,
     email: String,
-    location: String
+    location: String,
+    navController: NavController
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-        topPartOfProfile(
-            photoProfile = R.drawable.foto_gue,
-            userName = "Fahrian Afdholi",
+        TopPartOfProfile(
+            photoProfile =photoProfile,
+            userName = userName,
             onClickPhoto = { /*TODO onClickPhoto*/ Log.d("photo", "clicked") },
             onClickCameraIcon = { /*TODO onClickCamera*/ },
             onClickEdit = {/*TODO edit*/}
         )
-        bottomPartOfProfile(
+        BottomPartOfProfile(
             phoneNumber = phoneNumber,
             email = email,
             location = location
@@ -105,14 +107,8 @@ fun profileBody(
     }
 }
 
-@Preview
 @Composable
-fun prevProfileBody() {
-//    profileBody()
-}
-
-@Composable
-fun bottomPartOfProfile(
+fun BottomPartOfProfile(
     phoneNumber :String,
     email :String,
     location :String,
@@ -132,7 +128,7 @@ fun bottomPartOfProfile(
         ) {
 
             Button(
-                onClick = { onClickDeleteAccount },
+                onClick =  onClickDeleteAccount ,
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -155,7 +151,7 @@ fun bottomPartOfProfile(
 @Preview
 @Composable
 fun prevBottomPartProfile() {
-    bottomPartOfProfile(
+    BottomPartOfProfile(
         "+6287724273282",
         "Fahrian.Afdholi@gmail.com",
         "Indonesia"
@@ -163,8 +159,8 @@ fun prevBottomPartProfile() {
 }
 
 @Composable
-fun topPartOfProfile(
-    photoProfile : Int,
+fun TopPartOfProfile(
+    photoProfile : String,
     userName : String,
     onClickPhoto : () -> Unit,
     onClickCameraIcon: () -> Unit,
@@ -200,13 +196,13 @@ fun topPartOfProfile(
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Box {
-                    Image(
-                        painter = painterResource(id = photoProfile),
+                    AsyncImage(
+                        model = photoProfile,
                         modifier = Modifier
                             .height(106.dp)
                             .width(106.dp)
                             .clip(CircleShape)
-                            .clickable { onClickPhoto },
+                            .clickable(onClick = onClickPhoto),
                         contentDescription = "photo profile",
                         contentScale = ContentScale.Fit
                     )
@@ -218,7 +214,7 @@ fun topPartOfProfile(
                             .offset(x = 78.dp, y = 78.dp)
                             .clickable(
                                 indication = null,
-                                onClick = { onClickCameraIcon },
+                                onClick =  onClickCameraIcon ,
                                 interactionSource = interactionSource
                             )
                     )
@@ -236,10 +232,9 @@ fun topPartOfProfile(
                         contentDescription = "edit button",
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
-                            .clickable { onClickEdit }
                             .clickable(
                                 interactionSource = interactionSource,
-                                onClick = { onClickEdit },
+                                onClick =  onClickEdit ,
                                 indication = null
                             )
                     )
@@ -251,14 +246,14 @@ fun topPartOfProfile(
 
 }
 
-@Preview
-@Composable
-fun prevBackgroundProfile() {
-    topPartOfProfile(
-        R.drawable.foto_gue,
-        "Fahrian Afdholi",
-        {},
-        {},
-        {}
-    )
-}
+//@Preview
+//@Composable
+//fun prevBackgroundProfile() {
+//    TopPartOfProfile(
+//        R.drawable.foto_gue,
+//        "Fahrian Afdholi",
+//        {},
+//        {},
+//        {}
+//    )
+//}

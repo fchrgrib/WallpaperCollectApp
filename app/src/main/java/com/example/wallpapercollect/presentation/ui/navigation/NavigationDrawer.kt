@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -71,7 +72,7 @@ fun DrawerBody(
                 .clickable { onClickItem(item) }
                 .padding(24.dp)
             ) {
-                Icon(imageVector = item.icon, contentDescription = item.contentDescription)
+                Icon(painter = painterResource(id = item.icon), contentDescription = item.contentDescription)
                 Spacer(modifier = Modifier.padding(horizontal = 16.dp))
                 Text(text = item.title, fontSize = textStyle.fontSize, fontWeight = textStyle.fontWeight, color = textStyle.color,modifier = Modifier.weight(1f))
             }
