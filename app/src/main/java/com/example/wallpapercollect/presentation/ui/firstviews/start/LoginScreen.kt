@@ -1,7 +1,6 @@
 package com.example.wallpapercollect.presentation.ui.firstviews.start
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -13,7 +12,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,7 +32,6 @@ import com.example.wallpapercollect.api.models.Status
 import com.example.wallpapercollect.api.models.Token
 import com.example.wallpapercollect.api.models.Url
 import com.example.wallpapercollect.api.models.UserLogIn
-import com.example.wallpapercollect.presentation.MainActivity
 import com.example.wallpapercollect.presentation.ui.navigation.NavigationRouters
 import com.example.wallpapercollect.presentation.ui.theme.blue500
 import com.example.wallpapercollect.presentation.ui.theme.brand500
@@ -50,16 +46,8 @@ import com.example.wallpapercollect.presentation.viewmodel.auth.Login
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import okhttp3.internal.wait
-import kotlin.concurrent.thread
 
 
-@OptIn(DelicateCoroutinesApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LoginScreen(
@@ -67,15 +55,8 @@ fun LoginScreen(
     navController: NavController,
     gsc:GoogleSignInClient
 ) {
-//    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//        .requestIdToken(stringResource(R.string.google_token))
-//        .requestProfile()
-//        .requestEmail()
-//        .build()
-//
-//    val gsc = GoogleSignIn.getClient(LocalContext.current,gso)
-    val account: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(LocalContext.current)
 
+    val account: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(LocalContext.current)
 
     val statusLoginEmailDefaultSession = login.loginEmailDefault.collectAsState(Status("")).value
     val statusLoginGoogleSession = login.loginGoogleSession.collectAsState(Status("")).value
@@ -119,13 +100,6 @@ fun LoginScreen(
                                 password = password
                             )
                         )
-                        if(statusLoginEmailDefaultSession.status == "ok"){
-                            isLoginEmailDefaultSessionClicked = false
-
-                            navController.navigate(NavigationRouters.WALLPAPER){
-                                popUpTo(NavigationRouters.LOGIN){ inclusive = true}
-                            }
-                        }
                     },
                     onClickLoginFacebookSession = {
                         login.getLoginFacebookSession()
@@ -145,6 +119,14 @@ fun LoginScreen(
     //TODO do something if user insert invalid data
 
 
+    if(statusLoginEmailDefaultSession.status == "ok"){
+        isLoginEmailDefaultSessionClicked = false
+
+        navController.navigate(NavigationRouters.WALLPAPER){
+            popUpTo(NavigationRouters.LOGIN){ inclusive = true}
+        }
+    }
+
     if (statusLoginGoogleSession.status == "ok") {
         isLoginGoogleSessionClicked = false
 
@@ -153,31 +135,23 @@ fun LoginScreen(
         }
         return
     }
-
     if (isLoginGoogleSessionClicked) {
-        if (account != null) {
-            login.postLoginGoogleSession(Token(account.idToken ?: ""))
 
-        }
+        if (account != null) login.postLoginGoogleSession(Token(account.idToken ?: ""))
+
+        return
     }
-    return
 
+    if(
+        statusLoginFacebookSession.status == "ok"&&
+        isLoginFacebookSessionClicked
+    ){
+        isLoginFacebookSessionClicked = false
 
+//        TODO make facebook login session can use as mobile
+        return
+    }
 
-//
-//
-
-//
-//
-//    if(
-//        statusLoginFacebookSession.status == "ok"&&
-//        isLoginFacebookSessionClicked
-//    ){
-//        isLoginFacebookSessionClicked = false
-//
-////        TODO make facebook login session can use as mobile
-//        return
-//    }
 }
 
 

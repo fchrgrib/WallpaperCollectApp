@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,47 +31,38 @@ import com.example.wallpapercollect.R
 import com.example.wallpapercollect.api.models.Status
 import com.example.wallpapercollect.api.models.Token
 import com.example.wallpapercollect.api.models.Url
-import com.example.wallpapercollect.presentation.MainActivity
 import com.example.wallpapercollect.presentation.ui.navigation.NavigationRouters
 import com.example.wallpapercollect.presentation.ui.theme.blue500
 import com.example.wallpapercollect.presentation.ui.theme.brand500
 import com.example.wallpapercollect.presentation.ui.theme.gray40
 import com.example.wallpapercollect.presentation.ui.theme.interFont
 import com.example.wallpapercollect.presentation.ui.utils.logResTripButton
-import com.example.wallpapercollect.presentation.viewmodel.auth.Register
+import com.example.wallpapercollect.presentation.viewmodel.auth.Login
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
-// TODO make null handler in get started
+
 @Composable
 fun GetStarted(
     navController: NavController,
-    register: Register = hiltViewModel(),
+    login: Login = hiltViewModel(),
     gsc:GoogleSignInClient
 ) {
 
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(),
-        onResult = {}
-    )
-//    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//        .requestIdToken(stringResource(R.string.google_token))
-//        .requestProfile()
-//        .requestEmail()
-//        .build()
-//
-//    val gsc = GoogleSignIn.getClient(LocalContext.current,gso)
+
     val account: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(LocalContext.current)
 
+    var isLoginGoogleSessionClicked by rememberSaveable { mutableStateOf(false) }
+    var isLoginFacebookSessionClicked by rememberSaveable { mutableStateOf(false) }
 
-    var isRegisterGoogleSessionClicked by rememberSaveable { mutableStateOf(false) }
-    var isRegisterFacebookSessionClicked by rememberSaveable { mutableStateOf(false) }
+    val statusLoginGoogleSession = login.loginGoogleSession.collectAsState(Status("")).value
+    val statusLoginFacebookSession = login.loginFacebookSession.collectAsState(Url("","")).value
 
-    val statusRegisterGoogleSession = register.registerGoogleSession.collectAsState(Status("")).value
-    val statusRegisterFacebookSession = register.registerFacebookSession.collectAsState(Url("","")).value
-
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = {isLoginGoogleSessionClicked = true}
+    )
 
     Column(
         modifier = Modifier
@@ -121,7 +111,6 @@ fun GetStarted(
                 nameIcon = "google",
                 textButton = "Continue With Google"
             ) {
-                isRegisterGoogleSessionClicked = true
                 launcher.launch(gsc.signInIntent)
             }
 
@@ -135,7 +124,7 @@ fun GetStarted(
                 textButton = "Continue With Facebook"
             ) {
 //                TODO make facebook login session can use in mobile app
-                isRegisterFacebookSessionClicked = true
+                isLoginFacebookSessionClicked = true
             }
 
         }
@@ -150,34 +139,29 @@ fun GetStarted(
         Spacer(modifier = Modifier.padding(top = 15.dp))
     }
 
-    if (
-        account!!.idToken != ""&&
-        statusRegisterGoogleSession.status == "ok"&&
-        isRegisterGoogleSessionClicked
-    ){
-        isRegisterGoogleSessionClicked = false
+    if (statusLoginGoogleSession.status == "ok") {
+        isLoginGoogleSessionClicked = false
 
-        navController.navigate(NavigationRouters.WALLPAPER){
-            popUpTo(NavigationRouters.GET_STARTED){inclusive = true}
+        navController.navigate(NavigationRouters.WALLPAPER) {
+            popUpTo(NavigationRouters.LOGIN) { inclusive = true }
         }
         return
     }
-    if (
-        account.idToken != ""&&
-        isRegisterGoogleSessionClicked
-    ){
-        register.postRegisterGoogleSession(Token(account.idToken ?: ""))
+    if (isLoginGoogleSessionClicked) {
+
+        if (account != null) login.postLoginGoogleSession(Token(account.idToken ?: ""))
+
         return
     }
 
 
     if (
-        statusRegisterFacebookSession.status == "ok"&&
-        isRegisterFacebookSessionClicked
+        statusLoginFacebookSession.status == "ok"&&
+        isLoginFacebookSessionClicked
     ){
-        isRegisterFacebookSessionClicked = false
+        isLoginFacebookSessionClicked = false
 
-//        webView.loadUrl(statusRegisterFacebookSession.url)
+//        webView.loadUrl(statusRegisterFacebookSession.url) //TODO make login/register facebook can run in this mobie app
         return
     }
 }

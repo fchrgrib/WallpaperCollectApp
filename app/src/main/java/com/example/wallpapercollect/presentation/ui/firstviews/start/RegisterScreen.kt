@@ -30,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,7 +40,6 @@ import com.example.wallpapercollect.api.models.Status
 import com.example.wallpapercollect.api.models.Token
 import com.example.wallpapercollect.api.models.Url
 import com.example.wallpapercollect.api.models.UserRegister
-import com.example.wallpapercollect.presentation.MainActivity
 import com.example.wallpapercollect.presentation.ui.navigation.NavigationRouters
 import com.example.wallpapercollect.presentation.ui.theme.blue500
 import com.example.wallpapercollect.presentation.ui.theme.brand500
@@ -55,10 +53,8 @@ import com.example.wallpapercollect.presentation.viewmodel.auth.Register
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 
-// TODO make null handler in register screen
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "SetJavaScriptEnabled")
 @Composable
 fun RegisterEmailScreen(
@@ -67,19 +63,7 @@ fun RegisterEmailScreen(
     gsc:GoogleSignInClient
 ) {
 
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(),
-        onResult = {}
-    )
-//    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//        .requestIdToken(stringResource(R.string.google_token))
-//        .requestProfile()
-//        .requestEmail()
-//        .build()
-//
-//    val gsc = GoogleSignIn.getClient(LocalContext.current,gso)
     val account: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(LocalContext.current)
-
 
     var isRegisterEmailDefaultSessionClicked by rememberSaveable { mutableStateOf(false) }
     var isRegisterGoogleSessionClicked by rememberSaveable { mutableStateOf(false) }
@@ -89,6 +73,10 @@ fun RegisterEmailScreen(
     val statusRegisterGoogleSession = register.registerGoogleSession.collectAsState(Status("")).value
     val statusRegisterFacebookSession = register.registerFacebookSession.collectAsState(Url("","")).value
 
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = {isRegisterGoogleSessionClicked = true}
+    )
 
     var email by rememberSaveable { mutableStateOf("") }
     var fullName by rememberSaveable { mutableStateOf("") }
@@ -128,7 +116,6 @@ fun RegisterEmailScreen(
                     isRegisterEmailDefaultSessionClicked = true
                 },
                 onClickRegisterGoogle = {
-                    isRegisterGoogleSessionClicked = true
                     launcher.launch(gsc.signInIntent)
 
                 },
@@ -155,11 +142,7 @@ fun RegisterEmailScreen(
         return
     }
 
-    if (
-        statusRegisterGoogleSession.status=="ok"&&
-        account!!.idToken!=""&&
-        isRegisterGoogleSessionClicked
-    ){
+    if (statusRegisterGoogleSession.status=="ok"){
         isRegisterGoogleSessionClicked = false
 
         navController.navigate(NavigationRouters.LOGIN){
@@ -167,23 +150,22 @@ fun RegisterEmailScreen(
         }
         return
     }
-    if (
-        account!!.idToken!=""&&
-        isRegisterGoogleSessionClicked
-    ){
-        register.postRegisterGoogleSession(Token(account.idToken?:""))
+    if (isRegisterGoogleSessionClicked){
+
+        if(account!=null) register.postRegisterGoogleSession(Token(account.idToken?:""))
 
         return
     }
-    //TODO make login/register facebook can run in this mobie app
+
     if (
         statusRegisterFacebookSession.status == "ok"&&
         isRegisterFacebookSessionClicked
     ){
-        isRegisterFacebookSessionClicked = false
+        isRegisterFacebookSessionClicked = false  //TODO make login/register facebook can run in this mobie app
 
         return
     }
+
 }
 
 

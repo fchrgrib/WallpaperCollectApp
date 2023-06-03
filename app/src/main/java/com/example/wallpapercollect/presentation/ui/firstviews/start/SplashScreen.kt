@@ -16,17 +16,18 @@ import androidx.navigation.NavController
 import com.example.wallpapercollect.presentation.ui.navigation.NavigationRouters
 import com.example.wallpapercollect.presentation.viewmodel.profile.Profile
 import com.example.wallpapercollect.splashlightv3.SplashLightV3
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 //import com.example.wallpapercollect.splashlightv3.SplashLightV3
 import kotlinx.coroutines.delay
 
 
 @Composable
 fun SplashScreen(
-    navController: NavController,
-    profile: Profile = hiltViewModel()
+    navController: NavController
 ) {
     val context = LocalContext.current
-    val info = profile.profileInfo.collectAsState().value
+    val account: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(context)
     SplashLightV3()
 
     var navigateStart by remember{ mutableStateOf(false) }
@@ -37,7 +38,7 @@ fun SplashScreen(
 
     if(navigateStart){
         navigateStart = false
-        if (info.status =="ok") {
+        if (account!=null) {
             navController.navigate(NavigationRouters.WALLPAPER){
                 popUpTo(NavigationRouters.SPLASHSCREEN){inclusive = true}
             }
