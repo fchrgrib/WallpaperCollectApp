@@ -45,7 +45,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
-
+// TODO make null handler in get started
 @Composable
 fun GetStarted(
     navController: NavController,

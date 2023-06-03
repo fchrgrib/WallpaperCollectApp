@@ -29,10 +29,14 @@ fun SplashScreen(
     val info = profile.profileInfo.collectAsState().value
     SplashLightV3()
 
-//    var navigateStart by remember{ mutableStateOf(false) }
+    var navigateStart by remember{ mutableStateOf(false) }
     LaunchedEffect(true){
         delay(3000)
-//        navigateStart = true
+        navigateStart = true
+    }
+
+    if(navigateStart){
+        navigateStart = false
         if (info.status =="ok") {
             navController.navigate(NavigationRouters.WALLPAPER){
                 popUpTo(NavigationRouters.SPLASHSCREEN){inclusive = true}
@@ -45,7 +49,6 @@ fun SplashScreen(
                 }
             }
         }else if(!isFirstTimeUser(context)){
-            Log.d("ada apa", "masuk sini 1")
             navController.navigate(NavigationRouters.LOGIN){
                 popUpTo(NavigationRouters.SPLASHSCREEN){
                     inclusive = true

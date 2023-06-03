@@ -13,6 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,8 +51,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import okhttp3.internal.wait
+import kotlin.concurrent.thread
 
 
+@OptIn(DelicateCoroutinesApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LoginScreen(
@@ -59,10 +67,6 @@ fun LoginScreen(
     navController: NavController,
     gsc:GoogleSignInClient
 ) {
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(),
-        onResult = {}
-    )
 //    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
 //        .requestIdToken(stringResource(R.string.google_token))
 //        .requestProfile()
@@ -81,6 +85,10 @@ fun LoginScreen(
     var isLoginGoogleSessionClicked by rememberSaveable { mutableStateOf(false) }
     var isLoginFacebookSessionClicked by rememberSaveable { mutableStateOf(false) }
 
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = {isLoginGoogleSessionClicked = true}
+    )
 
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -111,15 +119,21 @@ fun LoginScreen(
                                 password = password
                             )
                         )
-                        isLoginEmailDefaultSessionClicked = true
+                        if(statusLoginEmailDefaultSession.status == "ok"){
+                            isLoginEmailDefaultSessionClicked = false
+
+                            navController.navigate(NavigationRouters.WALLPAPER){
+                                popUpTo(NavigationRouters.LOGIN){ inclusive = true}
+                            }
+                        }
                     },
                     onClickLoginFacebookSession = {
                         login.getLoginFacebookSession()
                         isLoginFacebookSessionClicked = true
                     },
                     onClickLoginGoogleSession = {
-                        isLoginGoogleSessionClicked = true
                         launcher.launch(gsc.signInIntent)
+
                     },
                     email = {email = it},
                     password = {password = it},
@@ -130,50 +144,43 @@ fun LoginScreen(
     }
     //TODO do something if user insert invalid data
 
-    if(
-        statusLoginEmailDefaultSession.status == "ok"&&
-        isLoginEmailDefaultSessionClicked
-    ){
-        isLoginEmailDefaultSessionClicked = false
 
-        navController.navigate(NavigationRouters.WALLPAPER){
-            popUpTo(NavigationRouters.LOGIN){ inclusive = true}
-        }
-        return
-    }
-
-
-    if(
-        account!!.idToken != ""&&
-        statusLoginGoogleSession.status == "ok"&&
-        isLoginGoogleSessionClicked
-    ){
+    if (statusLoginGoogleSession.status == "ok") {
         isLoginGoogleSessionClicked = false
 
-        navController.navigate(NavigationRouters.WALLPAPER){
-            popUpTo(NavigationRouters.LOGIN){inclusive = true}
+        navController.navigate(NavigationRouters.WALLPAPER) {
+            popUpTo(NavigationRouters.LOGIN) { inclusive = true }
         }
         return
     }
-    if(
-        account.idToken != ""&&
-        isLoginGoogleSessionClicked
-    ){
-        login.postLoginGoogleSession(Token(account.idToken ?: ""))
-        return
+
+    if (isLoginGoogleSessionClicked) {
+        if (account != null) {
+            login.postLoginGoogleSession(Token(account.idToken ?: ""))
+
+        }
     }
+    return
 
 
-    if(
-        statusLoginFacebookSession.status == "ok"&&
-        isLoginFacebookSessionClicked
-    ){
-        isLoginFacebookSessionClicked = false
 
-//        TODO make facebook login session can use as mobile
-        return
-    }
+//
+//
+
+//
+//
+//    if(
+//        statusLoginFacebookSession.status == "ok"&&
+//        isLoginFacebookSessionClicked
+//    ){
+//        isLoginFacebookSessionClicked = false
+//
+////        TODO make facebook login session can use as mobile
+//        return
+//    }
 }
+
+
 
 @Composable
 fun BodyLoginScreen(
