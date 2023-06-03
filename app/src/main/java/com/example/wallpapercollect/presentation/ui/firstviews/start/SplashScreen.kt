@@ -1,6 +1,7 @@
 package com.example.wallpapercollect.presentation.ui.firstviews.start
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -28,20 +29,14 @@ fun SplashScreen(
     val info = profile.profileInfo.collectAsState().value
     SplashLightV3()
 
-    var navigateStart by remember{ mutableStateOf(false) }
+//    var navigateStart by remember{ mutableStateOf(false) }
     LaunchedEffect(true){
         delay(3000)
-        navigateStart = true
-
-    }
-
-
-    if (navigateStart) {
+//        navigateStart = true
         if (info.status =="ok") {
             navController.navigate(NavigationRouters.WALLPAPER){
                 popUpTo(NavigationRouters.SPLASHSCREEN){inclusive = true}
             }
-            return
         }else if(isFirstTimeUser(context)){
             markUserAsNotFirstTime(context)
             navController.navigate(NavigationRouters.GET_STARTED){
@@ -49,16 +44,18 @@ fun SplashScreen(
                     inclusive = true
                 }
             }
-            return
         }else if(!isFirstTimeUser(context)){
+            Log.d("ada apa", "masuk sini 1")
             navController.navigate(NavigationRouters.LOGIN){
                 popUpTo(NavigationRouters.SPLASHSCREEN){
                     inclusive = true
                 }
             }
-            return
         }
     }
+
+
+
 
 }
 

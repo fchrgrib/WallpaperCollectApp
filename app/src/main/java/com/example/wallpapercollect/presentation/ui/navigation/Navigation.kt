@@ -15,13 +15,15 @@ import com.example.wallpapercollect.presentation.ui.home.DownloadScreen
 import com.example.wallpapercollect.presentation.ui.home.PrivacyScreen
 import com.example.wallpapercollect.presentation.ui.home.WallpaperCollectionScreen
 import com.example.wallpapercollect.presentation.ui.home.ScreenProfile
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 
 
 @Composable
 fun WallpaperCollectAppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = NavigationRouters.SPLASHSCREEN
+    startDestination: String = NavigationRouters.SPLASHSCREEN,
+    gsc:GoogleSignInClient
 ) {
     NavHost(
         navController = navController,
@@ -32,13 +34,13 @@ fun WallpaperCollectAppNavHost(
             SplashScreen(navController)
         }
         composable(NavigationRouters.GET_STARTED){
-            GetStarted(navController = navController)
+            GetStarted(navController = navController, gsc = gsc)
         }
         composable(NavigationRouters.LOGIN){
-            LoginScreen(navController = navController)
+            LoginScreen(navController = navController, gsc = gsc)
         }
         composable(NavigationRouters.REGISTER){
-            RegisterEmailScreen(navController = navController)
+            RegisterEmailScreen(navController = navController, gsc = gsc)
         }
         composable(NavigationRouters.PROFILE){
             ScreenProfile(navController = navController)

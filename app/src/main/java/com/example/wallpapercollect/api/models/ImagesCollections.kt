@@ -14,7 +14,7 @@ data class ImagesCollections(
 
 @JsonClass(generateAdapter = true)
 data class UrlAndId(
-    @Json(name = "images")
+    @Json(name = "image_url")
     val imageUrls: String,
     @Json(name = "image_id")
     val imageId:String

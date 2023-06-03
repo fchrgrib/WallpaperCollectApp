@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -41,24 +42,29 @@ import com.example.wallpapercollect.presentation.ui.utils.logResTripButton
 import com.example.wallpapercollect.presentation.viewmodel.auth.Register
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 
 @Composable
-fun GetStarted(navController: NavController, register: Register = hiltViewModel()) {
+fun GetStarted(
+    navController: NavController,
+    register: Register = hiltViewModel(),
+    gsc:GoogleSignInClient
+) {
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
         onResult = {}
     )
-    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestIdToken(stringResource(R.string.google_token))
-        .requestProfile()
-        .requestEmail()
-        .build()
-
-    val gsc = GoogleSignIn.getClient(MainActivity.instance,gso)
-    val account: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(MainActivity.instance)
+//    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//        .requestIdToken(stringResource(R.string.google_token))
+//        .requestProfile()
+//        .requestEmail()
+//        .build()
+//
+//    val gsc = GoogleSignIn.getClient(LocalContext.current,gso)
+    val account: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(LocalContext.current)
 
 
     var isRegisterGoogleSessionClicked by rememberSaveable { mutableStateOf(false) }
