@@ -48,9 +48,6 @@ object ApiModule {
         var cookieManager: CookieManager
         val timeOutMillis = 20000
 
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.level = HttpLoggingInterceptor.Level.BODY
-
         val builder = OkHttpClient.Builder()
             .followRedirects(false)
             .addInterceptor(loggingInterceptor)
@@ -97,7 +94,7 @@ object ApiModule {
                     .build()
                 chain.proceed(request)
             }
-            .addInterceptor(interceptor)
+
             .connectTimeout(timeOutMillis.toLong(), TimeUnit.MILLISECONDS)
             .readTimeout(timeOutMillis.toLong(), TimeUnit.MILLISECONDS)
             .writeTimeout(timeOutMillis.toLong(), TimeUnit.MILLISECONDS)

@@ -2,6 +2,8 @@ package com.example.wallpapercollect.presentation.ui.firstviews.start
 
 
 import android.content.Context
+import android.util.Log
+import android.webkit.CookieManager
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -10,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import com.example.wallpapercollect.api.ApiConstants
 import com.example.wallpapercollect.presentation.ui.navigation.NavigationRouters
 import com.example.wallpapercollect.splashlightv3.SplashLightV3
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -22,8 +25,11 @@ fun SplashScreen(
     navController: NavController
 ) {
     val context = LocalContext.current
-    val account: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(context)
     SplashLightV3()
+
+    val regexPattern = Regex("token=")
+    val input = CookieManager.getInstance().getCookie(ApiConstants.BASE_URL)?:""
+
 
     var navigateStart by remember{ mutableStateOf(false) }
     LaunchedEffect(true){
@@ -33,7 +39,7 @@ fun SplashScreen(
 
     if(navigateStart){
         navigateStart = false
-        if (account!=null) {
+        if (regexPattern.containsMatchIn(input)) {
             navController.navigate(NavigationRouters.WALLPAPER){
                 popUpTo(NavigationRouters.SPLASHSCREEN){inclusive = true}
             }
@@ -55,6 +61,8 @@ fun SplashScreen(
 
 
 }
+
+
 
 private fun isFirstTimeUser(context : Context): Boolean {
     val sharedPrefs = context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
