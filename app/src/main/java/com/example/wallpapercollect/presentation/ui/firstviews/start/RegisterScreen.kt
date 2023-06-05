@@ -139,6 +139,7 @@ fun RegisterEmailScreen(
         navController.navigate(NavigationRouters.LOGIN){
             popUpTo(NavigationRouters.REGISTER){inclusive = true}
         }
+        gsc.revokeAccess()
         return
     }
 
@@ -152,7 +153,7 @@ fun RegisterEmailScreen(
     }
     if (isRegisterGoogleSessionClicked){
 
-        if(account!=null) register.postRegisterGoogleSession(Token(account.idToken?:""))
+        if(account!=null) register.postRegisterGoogleSession(Token(account.idToken?:"")) else isRegisterGoogleSessionClicked = false
 
         return
     }

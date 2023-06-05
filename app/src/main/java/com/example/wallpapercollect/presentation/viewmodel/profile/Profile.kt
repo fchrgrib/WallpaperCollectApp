@@ -6,6 +6,7 @@ import com.example.wallpapercollect.api.models.UserDescription
 import com.example.wallpapercollect.repository.WallpaperCollectRepoImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,9 +21,18 @@ class Profile @Inject constructor(
     val profileInfo = _profileInfo
 
     init {
-        if(_profileInfo.value!=profileInfo.value) getProfileInfo()
+        observeProfileInfo()
     }
-    fun getProfileInfo(){
+
+    private fun observeProfileInfo(){
+        viewModelScope.launch {
+            profileInfo.collectLatest {
+                getProfileInfo()
+            }
+        }
+    }
+
+    private fun getProfileInfo(){
         viewModelScope.launch {
             try {
                 val response = wallpaperCollectRepoImpl.profile()

@@ -100,7 +100,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
-    implementation("com.squareup.okhttp3:okhttp:4.9.0")
+    implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.11")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
     implementation "com.squareup.moshi:moshi-kotlin:1.14.0"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:1.14.0"
@@ -121,5 +121,9 @@ dependencies {
 
     //REFRESH
     implementation 'com.google.accompanist:accompanist-swiperefresh:0.31.3-beta'
+
+    //Cookies Manager
+    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.11'
+    implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.2.0'
 
 }

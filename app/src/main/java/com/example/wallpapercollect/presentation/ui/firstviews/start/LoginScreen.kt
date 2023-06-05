@@ -1,6 +1,8 @@
 package com.example.wallpapercollect.presentation.ui.firstviews.start
 
 import android.annotation.SuppressLint
+import android.util.Log
+import android.webkit.WebView
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -28,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.wallpapercollect.R
+import com.example.wallpapercollect.api.ApiConstants
 import com.example.wallpapercollect.api.models.Status
 import com.example.wallpapercollect.api.models.Token
 import com.example.wallpapercollect.api.models.Url
@@ -46,6 +49,11 @@ import com.example.wallpapercollect.presentation.viewmodel.auth.Login
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import okhttp3.Cookie
+import okhttp3.CookieJar
+import okhttp3.OkHttpClient
+import java.net.CookieManager
+import java.net.CookiePolicy
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -65,6 +73,8 @@ fun LoginScreen(
     var isLoginEmailDefaultSessionClicked by rememberSaveable { mutableStateOf(false) }
     var isLoginGoogleSessionClicked by rememberSaveable { mutableStateOf(false) }
     var isLoginFacebookSessionClicked by rememberSaveable { mutableStateOf(false) }
+
+    val context = LocalContext.current
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
@@ -94,12 +104,17 @@ fun LoginScreen(
             content = {
                 BodyLoginScreen(
                     onClickLoginEmailDefault = {
+
+//                        android.webkit.CookieManager.allowFileSchemeCookies()
+
+
                         login.getLoginEmailDefault(
                             UserLogIn(
                                 email = email,
                                 password = password
                             )
                         )
+                        Log.d("cookies url",android.webkit.CookieManager.getInstance().getCookie(ApiConstants.BASE_URL)?:"ga ada wir")
                     },
                     onClickLoginFacebookSession = {
                         login.getLoginFacebookSession()
@@ -122,9 +137,12 @@ fun LoginScreen(
     if(statusLoginEmailDefaultSession.status == "ok"){
         isLoginEmailDefaultSessionClicked = false
 
+        android.webkit.CookieManager.getInstance().setAcceptCookie(true)
+
         navController.navigate(NavigationRouters.WALLPAPER){
             popUpTo(NavigationRouters.LOGIN){ inclusive = true}
         }
+
     }
 
     if (statusLoginGoogleSession.status == "ok") {

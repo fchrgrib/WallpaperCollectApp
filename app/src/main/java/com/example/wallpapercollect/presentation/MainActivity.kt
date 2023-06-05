@@ -3,7 +3,6 @@ package com.example.wallpapercollect.presentation
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.example.wallpapercollect.R
 import com.example.wallpapercollect.presentation.ui.navigation.WallpaperCollectAppNavHost
@@ -20,6 +19,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             supportActionBar?.hide()
+
+
 
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(stringResource(R.string.google_token))
