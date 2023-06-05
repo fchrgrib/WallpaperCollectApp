@@ -54,8 +54,6 @@ fun SplashScreen(
     }
 
 
-
-
 }
 
 private fun isFirstTimeUser(context : Context): Boolean {

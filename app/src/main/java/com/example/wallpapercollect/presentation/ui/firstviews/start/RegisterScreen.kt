@@ -139,7 +139,7 @@ fun RegisterEmailScreen(
         navController.navigate(NavigationRouters.LOGIN){
             popUpTo(NavigationRouters.REGISTER){inclusive = true}
         }
-        gsc.revokeAccess()
+        gsc.signOut()
         return
     }
 

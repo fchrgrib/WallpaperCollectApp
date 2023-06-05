@@ -14,7 +14,6 @@ import okhttp3.CookieJar
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.internal.http.HTTP_CLIENT_TIMEOUT
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -47,7 +46,7 @@ object ApiModule {
     @Singleton
     fun provideOkHttp(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
         var cookieManager: CookieManager
-        var TIMEOUT_MILLIS = 20000
+        val timeOutMillis = 20000
 
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
@@ -57,27 +56,18 @@ object ApiModule {
             .addInterceptor(loggingInterceptor)
             .cookieJar(object : CookieJar {
 
-                /**
-                 * @param url
-                 * @param cookies list of cookies get in api response
-                 */
                 override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
 
                     cookieManager = CookieManager.getInstance()
                     for (cookie in cookies) {
                         cookieManager.setCookie(url.toString(), cookie.toString())
-                        Log.e(
+                        Log.i(
                             "ok",
-                            "saveFromResponse :  Cookie url : " + url.toString() + cookie.toString()
+                            "saveFromResponse :  Cookie url : $url$cookie"
                         )
                     }
                 }
 
-                /**
-                 * @param url
-                 *
-                 * adding cookies with request
-                 */
                 override fun loadForRequest(url: HttpUrl): List<Cookie> {
                     cookieManager = CookieManager.getInstance()
 
@@ -108,9 +98,9 @@ object ApiModule {
                 chain.proceed(request)
             }
             .addInterceptor(interceptor)
-            .connectTimeout(TIMEOUT_MILLIS.toLong(), TimeUnit.MILLISECONDS)
-            .readTimeout(TIMEOUT_MILLIS.toLong(), TimeUnit.MILLISECONDS)
-            .writeTimeout(TIMEOUT_MILLIS.toLong(), TimeUnit.MILLISECONDS)
+            .connectTimeout(timeOutMillis.toLong(), TimeUnit.MILLISECONDS)
+            .readTimeout(timeOutMillis.toLong(), TimeUnit.MILLISECONDS)
+            .writeTimeout(timeOutMillis.toLong(), TimeUnit.MILLISECONDS)
 
 
         return builder.build()
