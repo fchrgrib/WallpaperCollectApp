@@ -1,7 +1,6 @@
 package com.example.wallpapercollect.presentation.ui.firstviews.start
 
 
-import android.content.Context
 import android.webkit.CookieManager
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
