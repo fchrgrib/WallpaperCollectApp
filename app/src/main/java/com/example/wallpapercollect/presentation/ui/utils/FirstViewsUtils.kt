@@ -9,11 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-
 import androidx.compose.material.Icon
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -39,7 +37,7 @@ import com.example.wallpapercollect.presentation.ui.theme.gray200
 import com.example.wallpapercollect.presentation.ui.theme.interFont
 
 @Composable
-fun textHeaderLogRes(header :String, description:String) {
+fun TextHeaderLogRes(header :String, description:String) {
     Text(
         text = header,
         fontFamily = interFont,
@@ -56,9 +54,9 @@ fun textHeaderLogRes(header :String, description:String) {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
-fun textFieldLogRes(placeHolder:String, content : (String) -> Unit) {
+fun TextFieldLogRes(placeHolder:String, content : (String) -> Unit) {
     var text by rememberSaveable {
         mutableStateOf("")
     }
@@ -83,8 +81,8 @@ fun textFieldLogRes(placeHolder:String, content : (String) -> Unit) {
             )
         },
         singleLine = true,
-        colors = TextFieldDefaults.textFieldColors(
-            containerColor = Color(0xFFF7F8F9),
+        colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = Color(0xFFF7F8F9),
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledTextColor = gray200
@@ -93,9 +91,8 @@ fun textFieldLogRes(placeHolder:String, content : (String) -> Unit) {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun textFieldLogResPass(placeHolder:String, content : (String) -> Unit) {
+fun TextFieldLogResPass(placeHolder:String, content : (String) -> Unit) {
     var text by rememberSaveable {
         mutableStateOf("")
     }
@@ -123,8 +120,8 @@ fun textFieldLogResPass(placeHolder:String, content : (String) -> Unit) {
             )
         },
         singleLine = true,
-        colors = TextFieldDefaults.textFieldColors(
-            containerColor = Color(0xFFF7F8F9),
+        colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = Color(0xFFF7F8F9),
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledTextColor = gray200
@@ -142,7 +139,7 @@ fun textFieldLogResPass(placeHolder:String, content : (String) -> Unit) {
 
 
 @Composable
-fun logResTripButton(
+fun LogResTripButton(
     icon: Int,
     colorIcon: Color,
     colorButton:Color,
@@ -187,7 +184,7 @@ fun logResTripButton(
 }
 
 @Composable
-fun logResButton(textButton:String, onClickable:()->Unit) {
+fun LogResButton(textButton:String, onClickable:()->Unit) {
     Button(
         onClick = onClickable,
         colors = ButtonDefaults.buttonColors(

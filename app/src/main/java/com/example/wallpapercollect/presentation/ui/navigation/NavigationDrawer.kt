@@ -6,17 +6,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -24,8 +20,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.example.wallpapercollect.presentation.ui.models.NavigationDrawerMenuItem
+import com.example.wallpapercollect.presentation.ui.utils.PhotoProfileCustom
+import com.example.wallpapercollect.presentation.ui.utils.PhotoProfileDefault
+import com.example.wallpapercollect.presentation.ui.utils.manipulateActivityUserToProfile
 import com.example.wallpapercollect.presentation.ui.utils.manipulateActivityUserToWallpaper
 
 
@@ -44,16 +42,19 @@ fun DrawerHeader(
             .fillMaxWidth()
             .clickable {
                 navController.navigate(NavigationRouters.PROFILE)
-                manipulateActivityUserToWallpaper(context,true)
+                manipulateActivityUserToWallpaper(context, true)
+                manipulateActivityUserToProfile(context, true)
             }) {
-            AsyncImage(
-                model = imageUrl,
-                contentDescription = "photo profile",
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-            )
+//            AsyncImage(
+//                model = imageUrl,
+//                contentDescription = "photo profile",
+//                contentScale = ContentScale.Fit,
+//                modifier = Modifier
+//                    .size(40.dp)
+//                    .clip(CircleShape)
+//            )
+            if(imageUrl != "") PhotoProfileCustom(imageUrl = imageUrl)
+            else PhotoProfileDefault()
             Spacer(modifier = Modifier.padding(horizontal = 4.dp))
             Text(text = userName, fontWeight = FontWeight.Bold, fontSize = 20.sp)
         }

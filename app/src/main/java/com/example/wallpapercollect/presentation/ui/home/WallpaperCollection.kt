@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -41,10 +42,17 @@ fun WallpaperCollectionScreen(
     navController: NavController
 ) {
     val context = LocalContext.current
-    if(isFirstTimeUserToWallpaper(context)){
-        manipulateActivityUserToWallpaper(context,false)
+
+    if (isFirstTimeUserToWallpaper(context)) {
+        manipulateActivityUserToWallpaper(context, false)
         profile.getProfileInfo()
         wallpaperCollect.getWallpaperCollection()
+    }
+    DisposableEffect(Unit) {
+
+        onDispose {
+            manipulateActivityUserToWallpaper(context, true)
+        }
     }
 
 
@@ -63,9 +71,10 @@ fun WallpaperCollectionScreen(
             topBar = { AppBar {
                 scope.launch {
                     scaffoldState.drawerState.open()
+                    profile.getProfileInfo()
                 }
             }},
-            drawerGesturesEnabled = scaffoldState.drawerState.isClosed,
+            drawerGesturesEnabled = scaffoldState.drawerState.isOpen,
             drawerContent = {
                 DrawerHeader(
                     imageUrl = profileInfo.photoProfile,

@@ -37,11 +37,11 @@ import com.example.wallpapercollect.presentation.ui.theme.blue500
 import com.example.wallpapercollect.presentation.ui.theme.brand500
 import com.example.wallpapercollect.presentation.ui.theme.gray40
 import com.example.wallpapercollect.presentation.ui.theme.interFont
-import com.example.wallpapercollect.presentation.ui.utils.logResButton
-import com.example.wallpapercollect.presentation.ui.utils.logResTripButton
-import com.example.wallpapercollect.presentation.ui.utils.textFieldLogRes
-import com.example.wallpapercollect.presentation.ui.utils.textFieldLogResPass
-import com.example.wallpapercollect.presentation.ui.utils.textHeaderLogRes
+import com.example.wallpapercollect.presentation.ui.utils.LogResButton
+import com.example.wallpapercollect.presentation.ui.utils.LogResTripButton
+import com.example.wallpapercollect.presentation.ui.utils.TextFieldLogRes
+import com.example.wallpapercollect.presentation.ui.utils.TextFieldLogResPass
+import com.example.wallpapercollect.presentation.ui.utils.TextHeaderLogRes
 import com.example.wallpapercollect.presentation.viewmodel.auth.Login
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -101,6 +101,7 @@ fun LoginScreen(
                                 password = password
                             )
                         )
+                        isLoginEmailDefaultSessionClicked = true
                     },
                     onClickLoginFacebookSession = {
                         login.getLoginFacebookSession()
@@ -120,15 +121,16 @@ fun LoginScreen(
     //TODO do something if user insert invalid data
 
 
-    if(statusLoginEmailDefaultSession.status == "ok"){
+    if(
+        statusLoginEmailDefaultSession.status == "ok"&&
+        isLoginEmailDefaultSessionClicked
+    ){
         isLoginEmailDefaultSessionClicked = false
-
-        android.webkit.CookieManager.getInstance().setAcceptCookie(true)
 
         navController.navigate(NavigationRouters.WALLPAPER){
             popUpTo(NavigationRouters.LOGIN){ inclusive = true}
         }
-
+        return
     }
 
     if (statusLoginGoogleSession.status == "ok") {
@@ -172,18 +174,18 @@ fun BodyLoginScreen(
 
     Column(modifier = Modifier.padding(top = 114.dp, start = 24.dp, end = 24.dp)) {
 
-        textHeaderLogRes(header = "Let’s Sign You in", description = "Welcome back, You‘ve  been missed")
+        TextHeaderLogRes(header = "Let’s Sign You in", description = "Welcome back, You‘ve  been missed")
         Spacer(modifier = Modifier.padding(top = 28.dp))
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-            textFieldLogRes(placeHolder = "Enter your email", content = {email(it)})
+            TextFieldLogRes(placeHolder = "Enter your email", content = {email(it)})
             Spacer(modifier = Modifier.padding(top = 16.dp))
 
-            textFieldLogResPass(placeHolder = "Enter your password", content = {password(it)})
+            TextFieldLogResPass(placeHolder = "Enter your password", content = {password(it)})
             Spacer(modifier = Modifier.padding(top = 56.dp))
 
-            logResButton(textButton = "Login", onClickable =onClickLoginEmailDefault /*TODO make login checker*/)
+            LogResButton(textButton = "Login", onClickable =onClickLoginEmailDefault /*TODO make login checker*/)
             Spacer(modifier = Modifier.padding(top = 28.dp))
 
             Text(
@@ -195,7 +197,7 @@ fun BodyLoginScreen(
             )
             Spacer(modifier = Modifier.padding(top = 28.dp))
 
-            logResTripButton(
+            LogResTripButton(
                 icon = R.drawable.facebook_logo,
                 colorIcon = Color.Unspecified,
                 colorButton = blue500,
@@ -206,7 +208,7 @@ fun BodyLoginScreen(
                 onClick = onClickLoginFacebookSession
             )
 
-            logResTripButton(
+            LogResTripButton(
                 icon = R.drawable.google_logo,
                 colorIcon = Color.Unspecified,
                 colorButton = Color.White,

@@ -45,10 +45,10 @@ import com.example.wallpapercollect.presentation.ui.theme.blue500
 import com.example.wallpapercollect.presentation.ui.theme.brand500
 import com.example.wallpapercollect.presentation.ui.theme.gray40
 import com.example.wallpapercollect.presentation.ui.theme.interFont
-import com.example.wallpapercollect.presentation.ui.utils.logResButton
-import com.example.wallpapercollect.presentation.ui.utils.textFieldLogRes
-import com.example.wallpapercollect.presentation.ui.utils.textFieldLogResPass
-import com.example.wallpapercollect.presentation.ui.utils.textHeaderLogRes
+import com.example.wallpapercollect.presentation.ui.utils.LogResButton
+import com.example.wallpapercollect.presentation.ui.utils.TextFieldLogRes
+import com.example.wallpapercollect.presentation.ui.utils.TextFieldLogResPass
+import com.example.wallpapercollect.presentation.ui.utils.TextHeaderLogRes
 import com.example.wallpapercollect.presentation.viewmodel.auth.Register
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -186,7 +186,7 @@ fun BodyRegisterEmail(
 
     Column(modifier = Modifier.padding(top = 114.dp, start = 24.dp, end = 22.dp)) {
 
-        textHeaderLogRes(header = "Getting Started", description = "Create an account to continue!")
+        TextHeaderLogRes(header = "Getting Started", description = "Create an account to continue!")
         Spacer(modifier = Modifier.padding(top = 28.dp))
 
         Column(
@@ -194,22 +194,22 @@ fun BodyRegisterEmail(
         ) {
 
 
-            textFieldLogRes(placeHolder = "Enter your Email", content = { email(it) })
+            TextFieldLogRes(placeHolder = "Enter your Email", content = { email(it) })
             Spacer(modifier = Modifier.padding(top = 16.dp))
 
-            textFieldLogRes(placeHolder = "Full name", content = { fullName(it) })
+            TextFieldLogRes(placeHolder = "Full name", content = { fullName(it) })
             Spacer(modifier = Modifier.padding(top = 16.dp))
 
-            textFieldLogRes(placeHolder = "Phone number", content = { phoneNumber(it) })
+            TextFieldLogRes(placeHolder = "Phone number", content = { phoneNumber(it) })
             Spacer(modifier = Modifier.padding(top = 16.dp))
 
-            textFieldLogResPass(placeHolder = "Password", content = { password(it) })
+            TextFieldLogResPass(placeHolder = "Password", content = { password(it) })
             Spacer(modifier = Modifier.padding(top = 16.dp))
 
-            textFieldLogRes(placeHolder = "Confirm Password", content = { confirmPassword(it) })
+            TextFieldLogRes(placeHolder = "Confirm Password", content = { confirmPassword(it) })
             Spacer(modifier = Modifier.padding(top = 28.dp))
 
-            logResButton(textButton = "Register", onClickable = onClickRegisterDefault)
+            LogResButton(textButton = "Register", onClickable = onClickRegisterDefault)
             Spacer(modifier = Modifier.padding(top = 28.dp))
 
 

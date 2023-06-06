@@ -36,7 +36,7 @@ import com.example.wallpapercollect.presentation.ui.theme.blue500
 import com.example.wallpapercollect.presentation.ui.theme.brand500
 import com.example.wallpapercollect.presentation.ui.theme.gray40
 import com.example.wallpapercollect.presentation.ui.theme.interFont
-import com.example.wallpapercollect.presentation.ui.utils.logResTripButton
+import com.example.wallpapercollect.presentation.ui.utils.LogResTripButton
 import com.example.wallpapercollect.presentation.viewmodel.auth.Login
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -90,7 +90,7 @@ fun GetStarted(
         Spacer(modifier = Modifier.padding(top = 40.dp))
         Column(modifier = Modifier.padding(horizontal = 24.dp)) {
 
-            logResTripButton(
+            LogResTripButton(
                 icon = R.drawable.sms,
                 colorIcon = Color.White,
                 colorButton = brand500,
@@ -102,7 +102,7 @@ fun GetStarted(
                 navController.navigate(NavigationRouters.REGISTER)
             }
 
-            logResTripButton(
+            LogResTripButton(
                 icon = R.drawable.google_logo,
                 colorIcon = Color.Unspecified,
                 colorButton = Color.White,
@@ -114,7 +114,7 @@ fun GetStarted(
                 launcher.launch(gsc.signInIntent)
             }
 
-            logResTripButton(
+            LogResTripButton(
                 icon = R.drawable.facebook_logo,
                 colorIcon = Color.Unspecified,
                 colorButton = blue500,
@@ -133,7 +133,9 @@ fun GetStarted(
         Row {
             Text(text = "Already Have an Account ? ")
             Text(text = "Sig in", color = brand500, modifier = Modifier.clickable {
-                navController.navigate(NavigationRouters.LOGIN){ launchSingleTop = true}
+                navController.navigate(NavigationRouters.LOGIN){
+                    popUpTo(NavigationRouters.GET_STARTED){ inclusive = true }
+                }
             })
         }
         Spacer(modifier = Modifier.padding(top = 15.dp))
