@@ -30,10 +30,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -42,6 +42,8 @@ import coil.compose.AsyncImage
 import com.example.wallpapercollect.R
 import com.example.wallpapercollect.presentation.ui.theme.brand500
 import com.example.wallpapercollect.presentation.ui.utils.boxContent
+import com.example.wallpapercollect.presentation.ui.utils.isFirstTimeUserToProfile
+import com.example.wallpapercollect.presentation.ui.utils.manipulateActivityUserToProfile
 import com.example.wallpapercollect.presentation.viewmodel.profile.Profile
 
 
@@ -51,7 +53,14 @@ fun ScreenProfile(
     navController: NavController,
     profile: Profile = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val profileInfo = profile.profileInfo.collectAsState().value
+
+    if(isFirstTimeUserToProfile(context)){
+        manipulateActivityUserToProfile(context,false)
+        profile.getProfileInfo()
+    }
+
     Scaffold(
         topBar = {
             Row {
@@ -60,7 +69,11 @@ fun ScreenProfile(
                     contentDescription = "Back",
                     modifier = Modifier
                         .padding(16.dp)
-                        .clickable { navController.popBackStack() },
+                        .clickable {
+                            navController.popBackStack()
+                            profile.getProfileInfo()
+                            manipulateActivityUserToProfile(context,true)
+                                   },
                     tint = Color.Unspecified
                 )
             }
@@ -77,11 +90,6 @@ fun ScreenProfile(
 
 }
 
-@Preview
-@Composable
-fun prevScreenProfile() {
-//    screenProfile()
-}
 @Composable
 fun ProfileBody(
     userName: String,
@@ -148,15 +156,7 @@ fun BottomPartOfProfile(
     }
 }
 
-@Preview
-@Composable
-fun prevBottomPartProfile() {
-    BottomPartOfProfile(
-        "+6287724273282",
-        "Fahrian.Afdholi@gmail.com",
-        "Indonesia"
-    ) { }
-}
+
 
 @Composable
 fun TopPartOfProfile(
@@ -245,15 +245,3 @@ fun TopPartOfProfile(
     }
 
 }
-
-//@Preview
-//@Composable
-//fun prevBackgroundProfile() {
-//    TopPartOfProfile(
-//        R.drawable.foto_gue,
-//        "Fahrian Afdholi",
-//        {},
-//        {},
-//        {}
-//    )
-//}

@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -23,6 +24,8 @@ import com.example.wallpapercollect.presentation.ui.navigation.DrawerHeader
 import com.example.wallpapercollect.presentation.ui.navigation.NavigationRouters
 import com.example.wallpapercollect.presentation.ui.utils.AppBar
 import com.example.wallpapercollect.presentation.ui.utils.CardPhoto
+import com.example.wallpapercollect.presentation.ui.utils.isFirstTimeUserToWallpaper
+import com.example.wallpapercollect.presentation.ui.utils.manipulateActivityUserToWallpaper
 import com.example.wallpapercollect.presentation.viewmodel.profile.Profile
 import com.example.wallpapercollect.presentation.viewmodel.wallpaperpage.WallpaperCollectUser
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -37,14 +40,20 @@ fun WallpaperCollectionScreen(
     profile: Profile = hiltViewModel(),
     navController: NavController
 ) {
+    val context = LocalContext.current
+    if(isFirstTimeUserToWallpaper(context)){
+        manipulateActivityUserToWallpaper(context,false)
+        profile.getProfileInfo()
+        wallpaperCollect.getWallpaperCollection()
+    }
+
+
     val isLoading by wallpaperCollect.isLoading.collectAsState()
     val refreshing = rememberSwipeRefreshState(isRefreshing = isLoading)
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
 
-    val statusWallpaperCollectUser = wallpaperCollect.wallpaperCollection.collectAsState(
-        ImagesCollections(ArrayList(),"")
-    ).value
+    val statusWallpaperCollectUser = wallpaperCollect.wallpaperCollection.collectAsState(ImagesCollections(ArrayList(),"")).value
     val profileInfo = profile.profileInfo.collectAsState().value
 
     SwipeRefresh(state = refreshing, onRefresh = wallpaperCollect::getWallpaperCollection) {
@@ -52,7 +61,9 @@ fun WallpaperCollectionScreen(
         Scaffold(
             scaffoldState = scaffoldState,
             topBar = { AppBar {
-                scope.launch { scaffoldState.drawerState.open() }
+                scope.launch {
+                    scaffoldState.drawerState.open()
+                }
             }},
             drawerGesturesEnabled = scaffoldState.drawerState.isClosed,
             drawerContent = {
@@ -84,9 +95,18 @@ fun WallpaperCollectionScreen(
                     ),
                     onClickItem ={
                         when(it.title){
-                            "home" -> navController.navigate(NavigationRouters.WALLPAPER)
-                            "privacy" -> navController.navigate(NavigationRouters.PRIVACY)
-                            "author" -> navController.navigate(NavigationRouters.AUTHOR)
+                            "home" -> {
+                                navController.navigate(NavigationRouters.WALLPAPER)
+                                manipulateActivityUserToWallpaper(context,true)
+                            }
+                            "privacy" -> {
+                                navController.navigate(NavigationRouters.PRIVACY)
+                                manipulateActivityUserToWallpaper(context,true)
+                            }
+                            "author" -> {
+                                navController.navigate(NavigationRouters.AUTHOR)
+                                manipulateActivityUserToWallpaper(context,true)
+                            }
                             else -> {}
                         }
                     }
@@ -121,28 +141,3 @@ fun WallpaperBody(navController: NavController, imageData : ArrayList<UrlAndId>)
     )
 
 }
-
-//@Preview
-//@Composable
-//fun prevWalper() {
-//    val dummy:ArrayList<String> = ArrayList()
-//    dummy.add("https://images.unsplash.com/photo-1527769929977-c341ee9f2033?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80")
-//    dummy.add("https://images.unsplash.com/photo-1527769929977-c341ee9f2033?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80")
-//    dummy.add("https://images.unsplash.com/photo-1527769929977-c341ee9f2033?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80")
-//    dummy.add("https://images.unsplash.com/photo-1527769929977-c341ee9f2033?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80")
-//    dummy.add("https://images.unsplash.com/photo-1527769929977-c341ee9f2033?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80")
-//    dummy.add("https://images.unsplash.com/photo-1527769929977-c341ee9f2033?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80")
-//    dummy.add("https://images.unsplash.com/photo-1527769929977-c341ee9f2033?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80")
-//    dummy.add("https://images.unsplash.com/photo-1527769929977-c341ee9f2033?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80")
-//    dummy.add("https://images.unsplash.com/photo-1527769929977-c341ee9f2033?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80")
-//    dummy.add("https://images.unsplash.com/photo-1527769929977-c341ee9f2033?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80")
-//    dummy.add("https://images.unsplash.com/photo-1527769929977-c341ee9f2033?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80")
-//    dummy.add("https://images.unsplash.com/photo-1527769929977-c341ee9f2033?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80")
-//
-//
-//
-//    Box(modifier = Modifier
-//        .fillMaxSize()){
-////        WallpaperBody(imageUrl = dummy)
-//    }
-//}

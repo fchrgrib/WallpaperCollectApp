@@ -20,19 +20,8 @@ class Profile @Inject constructor(
 
     val profileInfo = _profileInfo
 
-    init {
-        observeProfileInfo()
-    }
 
-    private fun observeProfileInfo(){
-        viewModelScope.launch {
-            profileInfo.collectLatest {
-                getProfileInfo()
-            }
-        }
-    }
-
-    private fun getProfileInfo(){
+    fun getProfileInfo(){
         viewModelScope.launch {
             try {
                 val response = wallpaperCollectRepoImpl.profile()

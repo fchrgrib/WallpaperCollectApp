@@ -2,7 +2,6 @@ package com.example.wallpapercollect.presentation.ui.firstviews.start
 
 
 import android.content.Context
-import android.util.Log
 import android.webkit.CookieManager
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,9 +13,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.example.wallpapercollect.api.ApiConstants
 import com.example.wallpapercollect.presentation.ui.navigation.NavigationRouters
+import com.example.wallpapercollect.presentation.ui.utils.isFirstTimeUser
+import com.example.wallpapercollect.presentation.ui.utils.markUserAsNotFirstTime
 import com.example.wallpapercollect.splashlightv3.SplashLightV3
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import kotlinx.coroutines.delay
 
 
@@ -41,20 +40,16 @@ fun SplashScreen(
         navigateStart = false
         if (regexPattern.containsMatchIn(input)) {
             navController.navigate(NavigationRouters.WALLPAPER){
-                popUpTo(NavigationRouters.SPLASHSCREEN){inclusive = true}
+                popUpTo(NavigationRouters.SPLASHSCREEN){ inclusive = true }
             }
         }else if(isFirstTimeUser(context)){
             markUserAsNotFirstTime(context)
             navController.navigate(NavigationRouters.GET_STARTED){
-                popUpTo(NavigationRouters.SPLASHSCREEN){
-                    inclusive = true
-                }
+                popUpTo(NavigationRouters.SPLASHSCREEN){ inclusive = true }
             }
         }else if(!isFirstTimeUser(context)){
             navController.navigate(NavigationRouters.LOGIN){
-                popUpTo(NavigationRouters.SPLASHSCREEN){
-                    inclusive = true
-                }
+                popUpTo(NavigationRouters.SPLASHSCREEN){ inclusive = true }
             }
         }
     }
@@ -64,13 +59,6 @@ fun SplashScreen(
 
 
 
-private fun isFirstTimeUser(context : Context): Boolean {
-    val sharedPrefs = context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
-    return sharedPrefs.getBoolean("isFirstTimeUser", true)
-}
-private fun markUserAsNotFirstTime(context : Context) {
-    val sharedPrefs = context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
-    sharedPrefs.edit().putBoolean("isFirstTimeUser", false).apply()
-}
+
 
 

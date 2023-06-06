@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.wallpapercollect.presentation.ui.models.NavigationDrawerMenuItem
+import com.example.wallpapercollect.presentation.ui.utils.manipulateActivityUserToWallpaper
 
 
 @Composable
@@ -33,12 +35,17 @@ fun DrawerHeader(
     userName:String,
     navController: NavController
 ) {
+    val context = LocalContext.current
+
     Box(modifier = Modifier
         .fillMaxWidth()
         .padding(top = 72.dp)){
         Row(modifier = Modifier
             .fillMaxWidth()
-            .clickable { navController.navigate(NavigationRouters.PROFILE) }) {
+            .clickable {
+                navController.navigate(NavigationRouters.PROFILE)
+                manipulateActivityUserToWallpaper(context,true)
+            }) {
             AsyncImage(
                 model = imageUrl,
                 contentDescription = "photo profile",
