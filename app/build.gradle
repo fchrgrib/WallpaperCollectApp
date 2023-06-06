@@ -120,7 +120,7 @@ dependencies {
     implementation "io.coil-kt:coil-gif:2.4.0"
 
     //REFRESH
-    implementation 'com.google.accompanist:accompanist-swiperefresh:0.31.3-beta'
+    implementation 'com.google.accompanist:accompanist-swiperefresh:0.25.1'
 
     //Cookies Manager
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.11'

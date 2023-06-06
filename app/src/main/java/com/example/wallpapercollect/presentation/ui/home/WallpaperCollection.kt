@@ -3,19 +3,17 @@ package com.example.wallpapercollect.presentation.ui.home
 
 import android.annotation.SuppressLint
 import android.webkit.CookieManager
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
-import androidx.compose.material.DrawerDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,10 +25,7 @@ import com.example.wallpapercollect.presentation.ui.models.NavigationDrawerMenuI
 import com.example.wallpapercollect.presentation.ui.navigation.DrawerBody
 import com.example.wallpapercollect.presentation.ui.navigation.DrawerHeader
 import com.example.wallpapercollect.presentation.ui.navigation.NavigationRouters
-import com.example.wallpapercollect.presentation.ui.theme.brand100
-import com.example.wallpapercollect.presentation.ui.theme.brand200
 import com.example.wallpapercollect.presentation.ui.theme.brand300
-import com.example.wallpapercollect.presentation.ui.theme.brand500
 import com.example.wallpapercollect.presentation.ui.utils.AppBar
 import com.example.wallpapercollect.presentation.ui.utils.CardPhoto
 import com.example.wallpapercollect.presentation.ui.utils.isFirstTimeUserToWallpaper
@@ -69,24 +64,34 @@ fun WallpaperCollectionScreen(
     }
 
 
-    val isLoading by wallpaperCollect.isLoading.collectAsState()
-    val refreshing = rememberSwipeRefreshState(isRefreshing = isLoading)
+    val isLoading = wallpaperCollect.isLoading.collectAsState(true).value
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
 
     val statusWallpaperCollectUser = wallpaperCollect.wallpaperCollection.collectAsState(ImagesCollections(ArrayList(),"")).value
     val profileInfo = profile.profileInfo.collectAsState().value
 
-    SwipeRefresh(state = refreshing, onRefresh = wallpaperCollect::getWallpaperCollection) {
+
+    SwipeRefresh(
+        state = swipeRefreshState,
+        onRefresh = { wallpaperCollect.getWallpaperCollection() },
+        modifier = Modifier
+        .fillMaxSize(),
+        refreshTriggerDistance = 2.dp
+        ) {
+
 
         Scaffold(
             scaffoldState = scaffoldState,
-            topBar = { AppBar {
-                scope.launch {
-                    scaffoldState.drawerState.open()
-                    profile.getProfileInfo()
+            topBar = {
+                AppBar {
+                    scope.launch {
+                        scaffoldState.drawerState.open()
+                        profile.getProfileInfo()
+                    }
                 }
-            }},
+            },
             drawerBackgroundColor = brand300,
             drawerGesturesEnabled = scaffoldState.drawerState.isOpen,
             drawerContent = {
@@ -122,27 +127,31 @@ fun WallpaperCollectionScreen(
                             icon = R.drawable.logout
                         )
                     ),
-                    onClickItem ={
-                        when(it.id){
+                    onClickItem = {
+                        when (it.id) {
                             "home" -> {
                                 navController.navigate(NavigationRouters.WALLPAPER)
-                                manipulateActivityUserToWallpaper(context,true)
+                                manipulateActivityUserToWallpaper(context, true)
                             }
+
                             "privacy" -> {
                                 navController.navigate(NavigationRouters.PRIVACY)
-                                manipulateActivityUserToWallpaper(context,true)
+                                manipulateActivityUserToWallpaper(context, true)
                             }
+
                             "author" -> {
                                 navController.navigate(NavigationRouters.AUTHOR)
-                                manipulateActivityUserToWallpaper(context,true)
+                                manipulateActivityUserToWallpaper(context, true)
                             }
+
                             "logout" -> {
-                                if (account !=null) gsc.signOut()
+                                if (account != null) gsc.signOut()
                                 CookieManager.getInstance().removeAllCookie()
-                                navController.navigate(NavigationRouters.LOGIN){
-                                    popUpTo(NavigationRouters.WALLPAPER){inclusive = true}
+                                navController.navigate(NavigationRouters.LOGIN) {
+                                    popUpTo(NavigationRouters.WALLPAPER) { inclusive = true }
                                 }
                             }
+
                             else -> {}
                         }
                     }
@@ -150,11 +159,15 @@ fun WallpaperCollectionScreen(
 
             },
             content = {
-                WallpaperBody(navController = navController, imageData = statusWallpaperCollectUser.wallpaperCollection)
+                WallpaperBody(
+                    navController = navController,
+                    imageData = statusWallpaperCollectUser.wallpaperCollection
+                )
             }
         )
-
     }
+
+
 }
 
 
