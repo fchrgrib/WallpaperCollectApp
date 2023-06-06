@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.ImageLoader
@@ -109,11 +110,12 @@ fun AppBar(
 ) {
     TopAppBar(
         title = {
-            Row(horizontalArrangement = Arrangement.SpaceBetween) {
+            Row(horizontalArrangement = Arrangement.Center) {
                 Icon(
                     painter = painterResource(id = R.drawable.walper_logo),
                     contentDescription = "logo walper",
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(7f),
+                    tint = Color.Unspecified
                 )
                 Spacer(modifier = Modifier.weight(1f))
             }
@@ -127,4 +129,12 @@ fun AppBar(
             }
         }
     )
+}
+
+@Preview
+@Composable
+fun AppBarPrev() {
+    AppBar {
+
+    }
 }

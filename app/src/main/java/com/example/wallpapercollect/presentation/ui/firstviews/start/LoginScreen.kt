@@ -133,7 +133,10 @@ fun LoginScreen(
         return
     }
 
-    if (statusLoginGoogleSession.status == "ok") {
+    if (
+        statusLoginGoogleSession.status == "ok"&&
+        isLoginGoogleSessionClicked
+    ) {
         isLoginGoogleSessionClicked = false
 
         navController.navigate(NavigationRouters.WALLPAPER) {

@@ -2,9 +2,11 @@ package com.example.wallpapercollect.presentation.ui.home
 
 
 import android.annotation.SuppressLint
+import android.webkit.CookieManager
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.material.DrawerDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
@@ -12,6 +14,8 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -23,6 +27,10 @@ import com.example.wallpapercollect.presentation.ui.models.NavigationDrawerMenuI
 import com.example.wallpapercollect.presentation.ui.navigation.DrawerBody
 import com.example.wallpapercollect.presentation.ui.navigation.DrawerHeader
 import com.example.wallpapercollect.presentation.ui.navigation.NavigationRouters
+import com.example.wallpapercollect.presentation.ui.theme.brand100
+import com.example.wallpapercollect.presentation.ui.theme.brand200
+import com.example.wallpapercollect.presentation.ui.theme.brand300
+import com.example.wallpapercollect.presentation.ui.theme.brand500
 import com.example.wallpapercollect.presentation.ui.utils.AppBar
 import com.example.wallpapercollect.presentation.ui.utils.CardPhoto
 import com.example.wallpapercollect.presentation.ui.utils.isFirstTimeUserToWallpaper
@@ -31,6 +39,9 @@ import com.example.wallpapercollect.presentation.viewmodel.profile.Profile
 import com.example.wallpapercollect.presentation.viewmodel.wallpaperpage.WallpaperCollectUser
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import kotlinx.coroutines.launch
 
 
@@ -39,9 +50,11 @@ import kotlinx.coroutines.launch
 fun WallpaperCollectionScreen(
     wallpaperCollect : WallpaperCollectUser = hiltViewModel(),
     profile: Profile = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
+    gsc: GoogleSignInClient
 ) {
     val context = LocalContext.current
+    val account: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(context)
 
     if (isFirstTimeUserToWallpaper(context)) {
         manipulateActivityUserToWallpaper(context, false)
@@ -74,6 +87,7 @@ fun WallpaperCollectionScreen(
                     profile.getProfileInfo()
                 }
             }},
+            drawerBackgroundColor = brand300,
             drawerGesturesEnabled = scaffoldState.drawerState.isOpen,
             drawerContent = {
                 DrawerHeader(
@@ -100,10 +114,16 @@ fun WallpaperCollectionScreen(
                             title = "Author's contact",
                             contentDescription = "author contact button",
                             icon = R.drawable.call
+                        ),
+                        NavigationDrawerMenuItem(
+                            id = "logout",
+                            title = "Logout",
+                            contentDescription = "logout button",
+                            icon = R.drawable.logout
                         )
                     ),
                     onClickItem ={
-                        when(it.title){
+                        when(it.id){
                             "home" -> {
                                 navController.navigate(NavigationRouters.WALLPAPER)
                                 manipulateActivityUserToWallpaper(context,true)
@@ -115,6 +135,13 @@ fun WallpaperCollectionScreen(
                             "author" -> {
                                 navController.navigate(NavigationRouters.AUTHOR)
                                 manipulateActivityUserToWallpaper(context,true)
+                            }
+                            "logout" -> {
+                                if (account !=null) gsc.signOut()
+                                CookieManager.getInstance().removeAllCookie()
+                                navController.navigate(NavigationRouters.LOGIN){
+                                    popUpTo(NavigationRouters.WALLPAPER){inclusive = true}
+                                }
                             }
                             else -> {}
                         }

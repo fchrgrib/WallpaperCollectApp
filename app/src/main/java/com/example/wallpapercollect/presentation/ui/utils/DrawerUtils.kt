@@ -21,7 +21,7 @@ fun PhotoProfileCustom(
         contentDescription = "photo profile",
         contentScale = ContentScale.Fit,
         modifier = Modifier
-            .size(40.dp)
+            .size(60.dp)
             .clip(CircleShape)
     )
 }
@@ -33,7 +33,7 @@ fun PhotoProfileDefault() {
         contentDescription = "photo profile",
         contentScale = ContentScale.Fit,
         modifier = Modifier
-            .size(40.dp)
+            .size(60.dp)
             .clip(CircleShape)
     )
 }

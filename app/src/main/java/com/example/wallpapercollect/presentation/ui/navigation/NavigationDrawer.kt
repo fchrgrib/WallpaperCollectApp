@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -44,22 +46,21 @@ fun DrawerHeader(
                 navController.navigate(NavigationRouters.PROFILE)
                 manipulateActivityUserToWallpaper(context, true)
                 manipulateActivityUserToProfile(context, true)
-            }) {
-//            AsyncImage(
-//                model = imageUrl,
-//                contentDescription = "photo profile",
-//                contentScale = ContentScale.Fit,
-//                modifier = Modifier
-//                    .size(40.dp)
-//                    .clip(CircleShape)
-//            )
+            }
+            .padding(24.dp)) {
+
             if(imageUrl != "") PhotoProfileCustom(imageUrl = imageUrl)
             else PhotoProfileDefault()
-            Spacer(modifier = Modifier.padding(horizontal = 4.dp))
-            Text(text = userName, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+            Spacer(modifier = Modifier.padding(horizontal = 10.dp))
+            Text(text = userName,
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.offset(y = 15.dp)
+            )
         }
     }
-    Spacer(modifier = Modifier.padding(vertical = 68.dp))
+    Spacer(modifier = Modifier.padding(vertical = 40.dp))
 }
 
 @Composable
@@ -67,7 +68,7 @@ fun DrawerBody(
     items: List<NavigationDrawerMenuItem>,
     modifier: Modifier = Modifier,
     textStyle: TextStyle = TextStyle(
-        color = Color.White,
+        color = Color.Black,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp
     ),
@@ -75,6 +76,7 @@ fun DrawerBody(
 ) {
     LazyColumn(modifier){
         items(items){ item->
+            if (item.id == "logout") Spacer(modifier = Modifier.padding(top = 90.dp))
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .clickable { onClickItem(item) }
@@ -82,7 +84,14 @@ fun DrawerBody(
             ) {
                 Icon(painter = painterResource(id = item.icon), contentDescription = item.contentDescription)
                 Spacer(modifier = Modifier.padding(horizontal = 16.dp))
-                Text(text = item.title, fontSize = textStyle.fontSize, fontWeight = textStyle.fontWeight, color = textStyle.color,modifier = Modifier.weight(1f))
+
+                Text(text = item.title,
+                    fontSize = textStyle.fontSize,
+                    fontWeight = textStyle.fontWeight,
+                    color = textStyle.color,
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Justify
+                )
             }
         }
     }

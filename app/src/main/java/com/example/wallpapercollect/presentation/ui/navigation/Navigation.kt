@@ -50,7 +50,7 @@ fun WallpaperCollectAppNavHost(
         }
         composable(NavigationRouters.WALLPAPER){
             //TODO please test this
-            WallpaperCollectionScreen(navController = navController)
+            WallpaperCollectionScreen(navController = navController, gsc = gsc)
         }
         composable(NavigationRouters.AUTHOR){
             //TODO please test this
