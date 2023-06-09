@@ -17,7 +17,7 @@ i use https://github.com/fchrgrib/wallpaperCollectAPI API to build this app.
 ## Screen
 
 ### Splash Screen
-<img src="https://github.com/fchrgrib/WallpaperCollectApp/assets/89321009/7f2b911e-8f6d-43e1-ab0c-f0d1894746bd" width="216" height="456">
+![SplashScreen](https://github.com/fchrgrib/WallpaperCollectApp/assets/89321009/5805ec44-500f-463e-94af-1aa2cff5921c)
 
 
 ### Welcome Screen
