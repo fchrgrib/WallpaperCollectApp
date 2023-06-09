@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -40,6 +43,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun WallpaperCollectionScreen(
@@ -63,13 +67,15 @@ fun WallpaperCollectionScreen(
         }
     }
 
-
+    
+    
     val isLoading = wallpaperCollect.isLoading.collectAsState(true).value
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
+    val state = rememberPullRefreshState(refreshing = isLoading, onRefresh = { wallpaperCollect.getWallpaperCollection() })
 
-    val statusWallpaperCollectUser = wallpaperCollect.wallpaperCollection.collectAsState(ImagesCollections(ArrayList(),"")).value
+    val statusWallpaperCollectUser = wallpaperCollect.wallpaperCollection.collectAsState(ImagesCollections(listOf(),"")).value
     val profileInfo = profile.profileInfo.collectAsState().value
 
 
@@ -159,11 +165,15 @@ fun WallpaperCollectionScreen(
 
             },
             content = {
-                WallpaperBody(
-                    navController = navController,
-                    imageData = statusWallpaperCollectUser.wallpaperCollection
-                )
-            }
+                if(statusWallpaperCollectUser.status == "ok") {
+                    WallpaperBody(
+                        navController = navController,
+                        imageData = statusWallpaperCollectUser.wallpaperCollection
+                    )
+                }
+
+            },
+            modifier = Modifier.pullRefresh(state)
         )
     }
 
@@ -173,7 +183,7 @@ fun WallpaperCollectionScreen(
 
 
 @Composable
-fun WallpaperBody(navController: NavController, imageData : ArrayList<UrlAndId>) {
+fun WallpaperBody(navController: NavController, imageData : List<UrlAndId>) {
 
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
@@ -182,7 +192,7 @@ fun WallpaperBody(navController: NavController, imageData : ArrayList<UrlAndId>)
             items(imageData){
                 CardPhoto(
                     navController = navController,
-                    imageUrl = it.imageUrls,
+                    imageUrl = it.imageUrls +"",
                     imageId = it.imageId
                 )
             }

@@ -46,7 +46,7 @@ fun WallpaperCollectAppNavHost(
             ScreenProfile(navController = navController)
         }
         composable(NavigationRouters.WALLPAPER+"/{id}"){
-            it.arguments?.getString("id")?.let { it1 -> DownloadScreen(id = it1) }
+             DownloadScreen(id = it.arguments?.getString("id")?:"",navController)
         }
         composable(NavigationRouters.WALLPAPER){
             //TODO please test this

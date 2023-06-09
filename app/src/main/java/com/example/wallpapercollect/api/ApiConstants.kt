@@ -1,7 +1,7 @@
 package com.example.wallpapercollect.api
 
 object ApiConstants{
-    const val BASE_URL = "https://wallpapercollectapi-production-c728.up.railway.app"
+    const val BASE_URL = "https://wallpapercollectapi-production-c728.up.railway.app/"
 
 }
 

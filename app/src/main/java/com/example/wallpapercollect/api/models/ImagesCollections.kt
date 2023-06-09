@@ -6,7 +6,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class ImagesCollections(
     @Json(name = "wallpaper_collection")
-    val wallpaperCollection: ArrayList<UrlAndId>,
+    val wallpaperCollection: List<UrlAndId>,
     @Json(name = "status")
     val status : String
 )

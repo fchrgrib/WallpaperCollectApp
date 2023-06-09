@@ -28,6 +28,10 @@ class WallpaperCollectUser @Inject constructor(
     val isLoading = _isLoading.asStateFlow()
     val wallpaperUploadStatus = _wallpaperUpload
 
+    init {
+        getWallpaperCollection()
+    }
+
     fun getWallpaperCollection(){
         viewModelScope.launch {
             _isLoading.value = true

@@ -81,7 +81,7 @@ fun CardPhoto(navController: NavController,imageUrl:String,imageId:String) {
                     model =
                     ImageRequest.Builder(LocalContext.current).data(R.drawable.loading_image)
                         .apply(block = {
-                            size(6)
+                            size(1)
                         }).build(), imageLoader = imageLoader
                 )
             )

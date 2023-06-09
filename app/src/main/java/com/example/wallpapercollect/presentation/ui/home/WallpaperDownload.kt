@@ -1,8 +1,8 @@
 package com.example.wallpapercollect.presentation.ui.home
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,23 +20,50 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
+import coil.ImageLoader
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.request.ImageRequest
 import com.example.wallpapercollect.R
+import com.example.wallpapercollect.api.ApiConstants
 import com.example.wallpapercollect.presentation.ui.theme.brand500
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun DownloadScreen(id : String) {
+fun DownloadScreen(
+    id:String,
+    navController: NavController,
+
+) {
+
+
+
+
     Scaffold(
         topBar = {
             Row(horizontalArrangement = Arrangement.SpaceBetween
@@ -47,7 +74,7 @@ fun DownloadScreen(id : String) {
                     contentDescription = "Back",
                     modifier = Modifier
                         .padding(16.dp)
-                        .clickable {/*TODO Implement back action here*/ }
+                        .clickable { navController.popBackStack() }
                         .background(Color.Transparent)
                         .alpha(0.5f),
                     tint = Color.Unspecified
@@ -66,7 +93,7 @@ fun DownloadScreen(id : String) {
         },
         content = { DownloadBody(
             {/*TODO make download API*/},
-            {/*TODO make favourite API*/}
+            id
         ) }
     )
 }
@@ -74,19 +101,27 @@ fun DownloadScreen(id : String) {
 @Composable
 fun DownloadBody(
     onClickDownload : () -> Unit,
-    onClickFavourite : () -> Unit
+    id: String
 ) {
+
+    var isClicked:Boolean by rememberSaveable { mutableStateOf(false) }
+    val imageUrl:String by rememberSaveable { mutableStateOf("${ApiConstants.BASE_URL}images/$id/") }
+
+    Log.d("id image",id)
+
     Box(modifier = Modifier
         .fillMaxSize()
         .background(Color.Black, RoundedCornerShape(0))
     ){
 
-        Image(
-            painter = painterResource(id = R.drawable.ini_wallpaper),
+
+        AsyncImage(
+            model = imageUrl,
             contentDescription = "wallpaper",
             contentScale = ContentScale.Fit,
             modifier = Modifier.fillMaxSize()
         )
+
         Box(
             contentAlignment = Alignment.BottomCenter,
             modifier = Modifier
@@ -114,23 +149,16 @@ fun DownloadBody(
                 )
             }
             Icon(
-                painter = painterResource(id = R.drawable.heart),
+                painter = if (isClicked) painterResource(id = R.drawable.full_heart) else painterResource(id = R.drawable.heart),
                 contentDescription = "favorite",
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(bottom = 90.dp)
-                    .clickable(onClick = onClickFavourite),
+                    .clickable(onClick = { isClicked = !isClicked }),
                 tint = Color.Unspecified
             )
         }
     }
 }
 
-@Preview
-@Composable
-fun prevDownloadBody() {
-    DownloadBody(
-        { Log.d("download-button", "clicked")},
-        {Log.d("favourite-button", "clicked")}
-    )
-}
+
