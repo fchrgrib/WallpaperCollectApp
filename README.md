@@ -21,16 +21,16 @@ i use https://github.com/fchrgrib/wallpaperCollectAPI API to build this app.
 
 
 ### Welcome Screen
-<img src = "./assets/WelcomeScreen.jpg" width="216" height="456">
+<img src = "./assets/GetStarted.jpg" width="216" height="456">
 
 ### Register Screen
-<img src="./assets/RegisterScreen.jpg" width="216" height="456">
+<img src="./assets/Register.jpg" width="216" height="456">
 
 ### Login Screen
 <img src="./assets/LoginScreen.jpg" width="216" height="456">
 
 ### Home Screen
-<img src="./assets/HomeScreenScreen.jpg" width="216" height="456">
+<img src="./assets/HomeScreen.jpg" width="216" height="456">
 
 ### Navigation Drawer
 <img src="./assets/NavigationDrawer.jpg" width="216" height="456">
