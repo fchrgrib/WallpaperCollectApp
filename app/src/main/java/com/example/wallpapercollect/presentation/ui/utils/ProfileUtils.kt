@@ -55,7 +55,7 @@ fun PhotoProfileDefault(
     onClickPhoto : () -> Unit
 ) {
     Image(
-        painter = painterResource(id = R.drawable.profile),
+        painter = painterResource(id = R.drawable.foto_gue),
         modifier = Modifier
             .height(106.dp)
             .width(106.dp)
