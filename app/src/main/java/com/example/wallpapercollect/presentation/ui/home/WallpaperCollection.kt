@@ -75,6 +75,7 @@ fun WallpaperCollectionScreen(
     gsc: GoogleSignInClient
 ) {
 
+
     val context = LocalContext.current
     val account: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(context)
 
@@ -253,6 +254,8 @@ fun WallpaperCollectionScreen(
         profile.getProfileInfo()
         wallpaperCollect.getWallpaperCollection()
     }
+
+
 
 }
 
