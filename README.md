@@ -9,9 +9,9 @@ i use https://github.com/fchrgrib/wallpaperCollectAPI API to build this app.
 ## Framework Use
 ```
 -Hilt Dagger
--Jepack Compose
+-Jetpack Compose
 -Retrofit
--Moshi
+-Moshi Converter
 ```
 
 ## Screen
