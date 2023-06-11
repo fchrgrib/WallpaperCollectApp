@@ -39,6 +39,7 @@ fun AuthorScreen(
             phoneNumber = "+62887733322111",
             photoProfile = "",
             location = "Indonesian",
+            isAuthor = true,
             navController = navController
         ) }
     )

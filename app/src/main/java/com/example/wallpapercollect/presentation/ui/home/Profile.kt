@@ -97,6 +97,7 @@ fun ScreenProfile(
             phoneNumber = profileInfo.phoneNumber,
             photoProfile = profileInfo.photoProfile,
             location = "Indonesian",
+            isAuthor = false,
             navController = navController
         ) }
     )
@@ -110,6 +111,7 @@ fun ProfileBody(
     phoneNumber: String,
     email: String,
     location: String,
+    isAuthor :Boolean,
     navController: NavController
 ) {
     val context = LocalContext.current
@@ -127,12 +129,14 @@ fun ProfileBody(
             userName = userNameSharedPreference(context),
             onClickPhoto = { /*TODO onClickPhoto*/ Log.d("photo", "clicked") },
             onClickCameraIcon = { /*TODO onClickCamera*/ },
-            onClickEdit = {/*TODO edit*/}
+            onClickEdit = {/*TODO edit*/},
+            isAuthor = isAuthor
         )
         BottomPartOfProfile(
             phoneNumber = phoneNumberSharedPreference(context),
             email = emailSharedPreference(context),
-            location = location
+            location = location,
+            isAuthor = isAuthor
         ) {/*TODO make onCLick delete account*/ }
     }
 }
@@ -142,6 +146,7 @@ fun BottomPartOfProfile(
     phoneNumber :String,
     email :String,
     location :String,
+    isAuthor: Boolean,
     onClickDeleteAccount : () -> Unit
 ) {
     Column(modifier = Modifier
@@ -156,23 +161,24 @@ fun BottomPartOfProfile(
                 .fillMaxSize()
                 .padding(bottom = 34.dp)
         ) {
+            if (!isAuthor) {
+                Button(
+                    onClick = onClickDeleteAccount,
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFF8092)
+                    )
 
-            Button(
-                onClick =  onClickDeleteAccount ,
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFFF8092)
-                )
-
-            ) {
-                Text(
-                    text = "Delete Account",
-                    textAlign = TextAlign.Center,
-                    fontSize = 16.sp
-                )
+                ) {
+                    Text(
+                        text = "Delete Account",
+                        textAlign = TextAlign.Center,
+                        fontSize = 16.sp
+                    )
+                }
             }
         }
     }
@@ -186,7 +192,8 @@ fun TopPartOfProfile(
     userName : String,
     onClickPhoto : () -> Unit,
     onClickCameraIcon: () -> Unit,
-    onClickEdit : () -> Unit
+    onClickEdit : () -> Unit,
+    isAuthor: Boolean
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     Box {
@@ -218,18 +225,9 @@ fun TopPartOfProfile(
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Box {
-//                    AsyncImage(
-//                        model = photoProfile,
-//                        modifier = Modifier
-//                            .height(106.dp)
-//                            .width(106.dp)
-//                            .clip(CircleShape)
-//                            .clickable(onClick = onClickPhoto),
-//                        contentDescription = "photo profile",
-//                        contentScale = ContentScale.Fit
-//                    )
+
                     if (photoProfile != "") PhotoProfileCustom(photoProfile = photoProfile, onClickPhoto = onClickPhoto)
-                    else PhotoProfileDefault(onClickPhoto = onClickPhoto)
+                    else PhotoProfileDefault(onClickPhoto = onClickPhoto, isAuthor = isAuthor)
 
                     Icon(
                         painter = painterResource(id = R.drawable.camera),

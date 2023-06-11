@@ -22,7 +22,7 @@ class WallpaperCollectUser @Inject constructor(
 
     private val _isLoading = MutableStateFlow(false)
     private val _wallpaperCollection = MutableStateFlow(ImagesCollections(ArrayList(),""))
-    private val _wallpaperUpload = MutableStateFlow<Status?>(null)
+    private val _wallpaperUpload = MutableStateFlow(Status(""))
 
     val wallpaperCollection = _wallpaperCollection
     val isLoading = _isLoading.asStateFlow()

@@ -1,6 +1,7 @@
 package com.example.wallpapercollect.presentation.viewmodel.auth
 
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.wallpapercollect.api.models.Status
@@ -9,6 +10,7 @@ import com.example.wallpapercollect.api.models.Url
 import com.example.wallpapercollect.api.models.UserRegister
 import com.example.wallpapercollect.repository.WallpaperCollectRepoImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -41,10 +43,10 @@ class Register @Inject constructor(
     fun postRegisterGoogleSession(token :Token){
         viewModelScope.launch {
             try {
-                val response = wallpaperCollectRepoImpl.userGoogleRegister(token)
+               val response = wallpaperCollectRepoImpl.userGoogleRegister(token)
                 _registerGoogleSession.emit(response)
             }catch (e : Exception){
-                _registerGoogleSession.emit(Status(e.message.toString()))
+                _registerGoogleSession.emit(Status("cannot create new user because email was existed"))
             }
         }
     }

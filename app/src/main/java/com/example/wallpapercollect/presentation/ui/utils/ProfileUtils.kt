@@ -52,10 +52,12 @@ fun BoxContent(startText :String, endText:String) {
 
 @Composable
 fun PhotoProfileDefault(
-    onClickPhoto : () -> Unit
+    onClickPhoto : () -> Unit,
+    isAuthor:Boolean
 ) {
     Image(
-        painter = painterResource(id = R.drawable.foto_gue),
+        painter = if (isAuthor) painterResource(id = R.drawable.foto_gue)
+        else painterResource(id = R.drawable.profile),
         modifier = Modifier
             .height(106.dp)
             .width(106.dp)

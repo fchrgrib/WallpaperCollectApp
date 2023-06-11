@@ -2,6 +2,7 @@ package com.example.wallpapercollect.presentation.ui.firstviews.start
 
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.border
@@ -139,21 +140,47 @@ fun RegisterEmailScreen(
         navController.navigate(NavigationRouters.LOGIN){
             popUpTo(NavigationRouters.REGISTER){inclusive = true}
         }
+        return
+    }
+
+    if(
+        statusRegisterEmailDefaultSession.status != "ok" && statusRegisterEmailDefaultSession.status != ""&&
+        isRegisterEmailDefaultSessionClicked
+    ){
+        isRegisterEmailDefaultSessionClicked = false
+
+        Toast.makeText(LocalContext.current,statusRegisterEmailDefaultSession.status,Toast.LENGTH_LONG).show()
         gsc.signOut()
         return
     }
 
-    if (statusRegisterGoogleSession.status=="ok"){
+    if (
+        statusRegisterGoogleSession.status=="ok"&&
+        isRegisterGoogleSessionClicked
+    ){
         isRegisterGoogleSessionClicked = false
 
         navController.navigate(NavigationRouters.LOGIN){
             popUpTo(NavigationRouters.REGISTER){inclusive = true}
         }
+        gsc.signOut()
         return
     }
+    if (
+        statusRegisterGoogleSession.status!="ok"&&statusRegisterGoogleSession.status!=""&&
+        isRegisterGoogleSessionClicked
+    ){
+        isRegisterGoogleSessionClicked = false
+
+        Toast.makeText(LocalContext.current,statusRegisterGoogleSession.status,Toast.LENGTH_LONG).show()
+        gsc.signOut()
+        return
+    }
+
     if (isRegisterGoogleSessionClicked){
 
-        if(account!=null) register.postRegisterGoogleSession(Token(account.idToken?:"")) else isRegisterGoogleSessionClicked = false
+        if(account!=null) register.postRegisterGoogleSession(Token(account.idToken?:""))
+        else isRegisterGoogleSessionClicked = false
 
         return
     }

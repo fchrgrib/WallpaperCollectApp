@@ -1,5 +1,8 @@
 package com.example.wallpapercollect.presentation.ui.utils
 
+import android.annotation.SuppressLint
+import android.content.ContentResolver
+import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -43,6 +46,7 @@ import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.example.wallpapercollect.R
 import com.example.wallpapercollect.presentation.ui.navigation.NavigationRouters
+import java.io.File
 
 
 @Composable
@@ -131,10 +135,13 @@ fun AppBar(
     )
 }
 
-@Preview
-@Composable
-fun AppBarPrev() {
-    AppBar {
-
+@SuppressLint("Recycle")
+fun getFileFromUri(contentResolver: ContentResolver, uri: Uri, directory: File): File {
+    val file =
+        File.createTempFile("suffix", ".prefix", directory)
+    file.outputStream().use {
+        contentResolver.openInputStream(uri)?.copyTo(it)
     }
+
+    return file
 }
