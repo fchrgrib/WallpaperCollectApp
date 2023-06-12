@@ -28,6 +28,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -68,7 +69,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 
 
 @OptIn(ExperimentalMaterialApi::class)
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @Composable
 fun WallpaperCollectionScreen(
     wallpaperCollect : WallpaperCollectUser = hiltViewModel(),
@@ -85,32 +86,38 @@ fun WallpaperCollectionScreen(
     var isUploadRequestCalled:Boolean by rememberSaveable { mutableStateOf(false) }
     var imagePart by rememberSaveable {mutableStateOf<MultipartBody.Part?>(null)}
 
+    val isLoading = wallpaperCollect.isLoading.collectAsState(false).value
+    val isUploadCompleted = wallpaperCollect.isUploadCompleted.collectAsState(false).value
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
+    val scaffoldState = rememberScaffoldState()
+    val scope = rememberCoroutineScope()
+    val state = rememberPullRefreshState(refreshing = isLoading, onRefresh = { wallpaperCollect.getWallpaperCollection() })
+
+
+    val statusWallpaperCollectUser = wallpaperCollect.wallpaperCollection.collectAsState(ImagesCollections(listOf(),"")).value
+    val statusImageUpload = wallpaperCollect.wallpaperUploadStatus.collectAsState(Status("")).value
+    val profileInfo = profile.profileInfo.collectAsState().value
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
         onResult = {
+
             if (it.resultCode == Activity.RESULT_OK){
                 val imageUri = it.data?.data!!
-                    val contentResolver = context.contentResolver
+                val contentResolver = context.contentResolver
                 var fileName =""
+                val cursor = contentResolver.query(imageUri, null, null, null, null)
 
-                    // Query the file's metadata using the content resolver and uri
-                    val cursor = contentResolver.query(imageUri, null, null, null, null)
-                    cursor?.use { curs ->
-                        if (curs.moveToFirst()) {
-                            // Retrieve the display name column index
-                            val displayNameIndex =
-                                curs.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-                            if (displayNameIndex != -1) {
-                                // Extract the file name from the display name column
-                                fileName = curs.getString(displayNameIndex)
-                            }
-                        }
+
+                cursor?.use { curs ->
+                    if (curs.moveToFirst()) {
+                        val displayNameIndex = curs.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                        if (displayNameIndex != -1) fileName = curs.getString(displayNameIndex)
                     }
+                }
 
 
-
-                val imageFile = getFileFromUri(context.contentResolver,imageUri,context.cacheDir)
+                val imageFile = getFileFromUri(contentResolver,imageUri,context.cacheDir)
                 if (imageFile.exists()){
                     val requestBody = imageFile.asRequestBody("image/*".toMediaType())
                     imagePart = MultipartBody.Part.createFormData("Image", fileName, requestBody)
@@ -129,18 +136,8 @@ fun WallpaperCollectionScreen(
         }
     }
 
-    
-    
-    val isLoading = wallpaperCollect.isLoading.collectAsState(false).value
-    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
-    val scaffoldState = rememberScaffoldState()
-    val scope = rememberCoroutineScope()
-    val state = rememberPullRefreshState(refreshing = isLoading, onRefresh = { wallpaperCollect.getWallpaperCollection() })
 
 
-    val statusWallpaperCollectUser = wallpaperCollect.wallpaperCollection.collectAsState(ImagesCollections(listOf(),"")).value
-    val statusImageUpload = wallpaperCollect.wallpaperUploadStatus.collectAsState(Status("")).value
-    val profileInfo = profile.profileInfo.collectAsState().value
 
 
     SwipeRefresh(
@@ -258,13 +255,15 @@ fun WallpaperCollectionScreen(
 
     if (isImageFABClicked&&imagePart!=null){
         isImageFABClicked = false
-        wallpaperCollect.wallpaperUpload(imagePart!!)
         isUploadRequestCalled = true
+
+        wallpaperCollect.wallpaperUpload(imagePart!!)
         return
     }
-    if (isUploadRequestCalled&&statusImageUpload.status=="ok"){
+    if (isUploadRequestCalled&&statusImageUpload.status=="ok"&&isUploadCompleted){
         isUploadRequestCalled = false
         imagePart = null
+
         Toast.makeText(context,"Upload Success",Toast.LENGTH_LONG).show()
         wallpaperCollect.getWallpaperCollection()
         return
@@ -273,6 +272,7 @@ fun WallpaperCollectionScreen(
 
     if (isFirstTimeUserToWallpaper(context)) {
         manipulateActivityUserToWallpaper(context, false)
+
         profile.getProfileInfo()
         wallpaperCollect.getWallpaperCollection()
     }

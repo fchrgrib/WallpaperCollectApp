@@ -62,11 +62,11 @@ class WallpaperCollectRepoImpl @Inject constructor(
         return wallpaperCollectAPI.getImage(imageId)
     }
 
-    override suspend fun deleteImage(imageId: String): Any {
+    override suspend fun deleteImage(imageId: String): Status {
         return wallpaperCollectAPI.deleteImage(imageId)
     }
 
-    override suspend fun getPhotoProfile(imageId: String): Any {
+    override suspend fun getPhotoProfile(imageId: String): Status {
         return wallpaperCollectAPI.getPhotoProfile(imageId)
     }
 

@@ -29,6 +29,6 @@ interface WallpaperCollectRepo {
 
 
     suspend fun getImages(imageId :String) : Any
-    suspend fun deleteImage(imageId: String):Any
-    suspend fun getPhotoProfile(imageId :String) : Any
+    suspend fun deleteImage(imageId: String):Status
+    suspend fun getPhotoProfile(imageId :String) : Status
 }

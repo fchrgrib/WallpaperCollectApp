@@ -86,12 +86,12 @@ interface WallpaperCollectAPI {
     @DELETE("images/{id}/delete")
     suspend fun deleteImage(
         @Path("id") imageId:String
-    ) : Any
+    ) : Status
 
     @GET("photo_profile/{id}")
     suspend fun getPhotoProfile(
         @Path("id") imageId:String
-    ) : Any
+    ) : Status
 
     /**TODO make End Point that update photo profile and delete photo profile**/
 
