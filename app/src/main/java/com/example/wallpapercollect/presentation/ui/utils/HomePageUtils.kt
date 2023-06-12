@@ -49,7 +49,12 @@ import java.io.File
 
 
 @Composable
-fun CardPhoto(navController: NavController,imageUrl:String,imageId:String) {
+fun CardPhoto(
+    navController: NavController,
+    imageUrl: String,
+    imageId: String,
+    imageName: String
+) {
     Card(modifier = Modifier
         .width(172.1.dp)
         .height(301.4.dp)
@@ -78,7 +83,7 @@ fun CardPhoto(navController: NavController,imageUrl:String,imageId:String) {
                 modifier = Modifier
                     .clip(RoundedCornerShape(10.dp))
                     .fillMaxSize()
-                    .clickable { navController.navigate(NavigationRouters.WALLPAPER + "/" + imageId) },
+                    .clickable { navController.navigate(NavigationRouters.WALLPAPER + "/" + imageId+"/"+imageName) },
                 contentScale = ContentScale.Crop,
                 placeholder = rememberAsyncImagePainter(
                     model =

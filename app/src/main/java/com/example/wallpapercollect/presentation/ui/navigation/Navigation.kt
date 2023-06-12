@@ -45,19 +45,20 @@ fun WallpaperCollectAppNavHost(
         composable(NavigationRouters.PROFILE){
             ScreenProfile(navController = navController)
         }
-        composable(NavigationRouters.WALLPAPER+"/{id}"){
-             DownloadScreen(id = it.arguments?.getString("id")?:"",navController)
+        composable(NavigationRouters.WALLPAPER+"/{id}/{name}"){
+             DownloadScreen(
+                 id = it.arguments?.getString("id")?:"",
+                 imageName = it.arguments?.getString("name")?:"",
+                 navController = navController
+             )
         }
         composable(NavigationRouters.WALLPAPER){
-            //TODO please test this
             WallpaperCollectionScreen(navController = navController, gsc = gsc)
         }
         composable(NavigationRouters.AUTHOR){
-            //TODO please test this
             AuthorScreen(navController = navController)
         }
         composable(NavigationRouters.PRIVACY){
-            //TODO please test this
             PrivacyScreen(navController = navController)
         }
     }

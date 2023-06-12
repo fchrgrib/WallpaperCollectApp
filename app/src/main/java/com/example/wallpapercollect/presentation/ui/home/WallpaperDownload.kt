@@ -1,7 +1,6 @@
 package com.example.wallpapercollect.presentation.ui.home
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,15 +37,17 @@ import coil.compose.AsyncImage
 import com.example.wallpapercollect.R
 import com.example.wallpapercollect.api.ApiConstants
 import com.example.wallpapercollect.presentation.ui.theme.brand500
+import com.example.wallpapercollect.presentation.ui.utils.Downloader
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun DownloadScreen(
     id:String,
+    imageName:String,
     navController: NavController,
-
 ) {
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -75,7 +77,7 @@ fun DownloadScreen(
             }
         },
         content = { DownloadBody(
-            {/*TODO make download API*/},
+            {Downloader(context).downloadFile("${ApiConstants.BASE_URL}images/$id/",imageName)},
             id
         ) }
     )
@@ -89,8 +91,6 @@ fun DownloadBody(
 
     var isClicked:Boolean by rememberSaveable { mutableStateOf(false) }
     val imageUrl:String by rememberSaveable { mutableStateOf("${ApiConstants.BASE_URL}images/$id/") }
-
-    Log.d("id image",id)
 
     Box(modifier = Modifier
         .fillMaxSize()

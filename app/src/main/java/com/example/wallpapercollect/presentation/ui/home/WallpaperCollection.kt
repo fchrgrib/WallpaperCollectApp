@@ -4,6 +4,8 @@ package com.example.wallpapercollect.presentation.ui.home
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.provider.OpenableColumns
+import android.util.Log
 import android.webkit.CookieManager
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -89,10 +91,30 @@ fun WallpaperCollectionScreen(
         onResult = {
             if (it.resultCode == Activity.RESULT_OK){
                 val imageUri = it.data?.data!!
+                    val contentResolver = context.contentResolver
+                var fileName =""
+
+                    // Query the file's metadata using the content resolver and uri
+                    val cursor = contentResolver.query(imageUri, null, null, null, null)
+                    cursor?.use { curs ->
+                        if (curs.moveToFirst()) {
+                            // Retrieve the display name column index
+                            val displayNameIndex =
+                                curs.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                            if (displayNameIndex != -1) {
+                                // Extract the file name from the display name column
+                                fileName = curs.getString(displayNameIndex)
+                            }
+                        }
+                    }
+
+
+
                 val imageFile = getFileFromUri(context.contentResolver,imageUri,context.cacheDir)
                 if (imageFile.exists()){
                     val requestBody = imageFile.asRequestBody("image/*".toMediaType())
-                    imagePart = MultipartBody.Part.createFormData("Image", imageFile.name, requestBody)
+                    imagePart = MultipartBody.Part.createFormData("Image", fileName, requestBody)
+                    Log.d("file name",fileName)
 
                     isImageFABClicked = true
                 }
@@ -219,7 +241,7 @@ fun WallpaperCollectionScreen(
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = {
-                              val intent = Intent().setType("image/*").setAction(Intent.ACTION_GET_CONTENT)
+                                val intent = Intent().setType("image/*").setAction(Intent.ACTION_GET_CONTENT)
                                 launcher.launch(intent)
                               },
                     shape = CircleShape,
@@ -272,7 +294,8 @@ fun WallpaperBody(navController: NavController, imageData : List<UrlAndId>) {
                 CardPhoto(
                     navController = navController,
                     imageUrl = it.imageUrls +"",
-                    imageId = it.imageId
+                    imageId = it.imageId,
+                    imageName = it.imageName
                 )
             }
         }
