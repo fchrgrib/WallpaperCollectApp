@@ -71,16 +71,30 @@ fun PhotoProfileDefault(
 @Composable
 fun PhotoProfileCustom(
     photoProfile :String,
-    onClickPhoto: () -> Unit
+    onClickPhoto: () -> Unit,
+    isAuthor: Boolean
 ) {
-    AsyncImage(
-        model = photoProfile,
-        modifier = Modifier
-            .height(106.dp)
-            .width(106.dp)
-            .clip(CircleShape)
-            .clickable(onClick = onClickPhoto),
-        contentDescription = "photo profile",
-        contentScale = ContentScale.Fit
-    )
+    if (!isAuthor) {
+        AsyncImage(
+            model = photoProfile,
+            modifier = Modifier
+                .height(106.dp)
+                .width(106.dp)
+                .clip(CircleShape)
+                .clickable(onClick = onClickPhoto),
+            contentDescription = "photo profile",
+            contentScale = ContentScale.Fit
+        )
+    }else{
+        Image(
+            painter = painterResource(id = R.drawable.foto_gue),
+            modifier = Modifier
+                .height(106.dp)
+                .width(106.dp)
+                .clip(CircleShape)
+                .clickable(onClick = onClickPhoto),
+            contentDescription = "photo profile",
+            contentScale = ContentScale.Fit
+        )
+    }
 }

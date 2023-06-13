@@ -226,7 +226,7 @@ fun TopPartOfProfile(
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Box {
 
-                    if (photoProfile != "") PhotoProfileCustom(photoProfile = photoProfile, onClickPhoto = onClickPhoto)
+                    if (photoProfile != "") PhotoProfileCustom(photoProfile = photoProfile, onClickPhoto = onClickPhoto,isAuthor = isAuthor)
                     else PhotoProfileDefault(onClickPhoto = onClickPhoto, isAuthor = isAuthor)
                     if(!isAuthor) {
                         Icon(
