@@ -177,7 +177,7 @@ fun DownloadBody(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
-                    .background(brand500.copy(alpha = 0.1f), RoundedCornerShape(10.dp)),
+                    .background(brand500.copy(alpha = 0.8f), RoundedCornerShape(10.dp)),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Transparent
                 )

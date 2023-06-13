@@ -228,19 +228,20 @@ fun TopPartOfProfile(
 
                     if (photoProfile != "") PhotoProfileCustom(photoProfile = photoProfile, onClickPhoto = onClickPhoto)
                     else PhotoProfileDefault(onClickPhoto = onClickPhoto, isAuthor = isAuthor)
-
-                    Icon(
-                        painter = painterResource(id = R.drawable.camera),
-                        contentDescription = "camera",
-                        tint = Color.Unspecified,
-                        modifier = Modifier
-                            .offset(x = 78.dp, y = 78.dp)
-                            .clickable(
-                                indication = null,
-                                onClick = onClickCameraIcon,
-                                interactionSource = interactionSource
-                            )
-                    )
+                    if(!isAuthor) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.camera),
+                            contentDescription = "camera",
+                            tint = Color.Unspecified,
+                            modifier = Modifier
+                                .offset(x = 78.dp, y = 78.dp)
+                                .clickable(
+                                    indication = null,
+                                    onClick = onClickCameraIcon,
+                                    interactionSource = interactionSource
+                                )
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.padding(top = 12.dp))
                 Row {
@@ -250,17 +251,19 @@ fun TopPartOfProfile(
                         fontSize = 24.sp
                     )
                     Spacer(modifier = Modifier.padding(7.dp))
-                    Icon(
-                        painter = painterResource(id = R.drawable.edit),
-                        contentDescription = "edit button",
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .clickable(
-                                interactionSource = interactionSource,
-                                onClick = onClickEdit,
-                                indication = null
-                            )
-                    )
+                    if (!isAuthor) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.edit),
+                            contentDescription = "edit button",
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .clickable(
+                                    interactionSource = interactionSource,
+                                    onClick = onClickEdit,
+                                    indication = null
+                                )
+                        )
+                    }
                 }
             }
 
