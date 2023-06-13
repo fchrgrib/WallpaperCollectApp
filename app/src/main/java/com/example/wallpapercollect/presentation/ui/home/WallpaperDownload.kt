@@ -158,7 +158,7 @@ fun DownloadBody(
 
         AsyncImage(
             model = imageUrl,
-            contentDescription = "wallpaper",
+            contentDescription = "wallpaper ${id}",
             contentScale = ContentScale.Fit,
             modifier = Modifier.fillMaxSize()
         )

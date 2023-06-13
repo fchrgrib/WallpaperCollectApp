@@ -19,7 +19,7 @@ fun PhotoProfileCustom(
     AsyncImage(
         model = imageUrl,
         contentDescription = "photo profile",
-        contentScale = ContentScale.Fit,
+        contentScale = ContentScale.Crop,
         modifier = Modifier
             .size(60.dp)
             .clip(CircleShape)

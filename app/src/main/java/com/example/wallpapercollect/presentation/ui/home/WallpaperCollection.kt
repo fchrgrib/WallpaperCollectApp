@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.provider.OpenableColumns
-import android.util.Log
 import android.webkit.CookieManager
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -102,8 +101,10 @@ fun WallpaperCollectionScreen(
         onResult = {
 
             if (it.resultCode == Activity.RESULT_OK){
+
                 val imageUri = it.data?.data!!
                 val contentResolver = context.contentResolver
+                val cacheDir = context.cacheDir
                 var fileName =""
                 val cursor = contentResolver.query(imageUri, null, null, null, null)
 
@@ -116,11 +117,10 @@ fun WallpaperCollectionScreen(
                 }
 
 
-                val imageFile = getFileFromUri(contentResolver,imageUri,context.cacheDir)
+                val imageFile = getFileFromUri(contentResolver,imageUri,cacheDir)
                 if (imageFile.exists()){
                     val requestBody = imageFile.asRequestBody("image/*".toMediaType())
                     imagePart = MultipartBody.Part.createFormData("Image", fileName, requestBody)
-                    Log.d("file name",fileName)
 
                     isImageFABClicked = true
                 }
@@ -134,8 +134,6 @@ fun WallpaperCollectionScreen(
             manipulateActivityUserToWallpaper(context, true)
         }
     }
-
-
 
 
 

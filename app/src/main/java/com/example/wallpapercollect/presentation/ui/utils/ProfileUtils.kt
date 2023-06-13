@@ -83,7 +83,7 @@ fun PhotoProfileCustom(
                 .clip(CircleShape)
                 .clickable(onClick = onClickPhoto),
             contentDescription = "photo profile",
-            contentScale = ContentScale.Fit
+            contentScale = ContentScale.Crop
         )
     }else{
         Image(

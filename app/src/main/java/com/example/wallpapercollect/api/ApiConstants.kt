@@ -25,5 +25,6 @@ object ApiEndPoints{
     const val UPDATE_PROFILE = "wallpaper/profile/update_profile"
     const val VIEW_PROFILE = "wallpaper/profile"
     const val UPLOAD_PROFILE_PICTURE = "wallpaper/profile/upload_profile_picture"
+    const val UPDATE_PROFILE_PICTURE = "wallpaper/profile/update_profile_picture"
 
 }

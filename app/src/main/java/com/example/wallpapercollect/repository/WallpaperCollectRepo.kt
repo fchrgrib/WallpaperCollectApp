@@ -24,7 +24,8 @@ interface WallpaperCollectRepo {
 
 
     suspend fun profile():UserDescription
-    suspend fun profilePictureUpload(image : MultipartBody.Part): Any
+    suspend fun profilePictureUpload(image : MultipartBody.Part): Status
+    suspend fun profilePictureUpdate(image : MultipartBody.Part): Status
 
 
 

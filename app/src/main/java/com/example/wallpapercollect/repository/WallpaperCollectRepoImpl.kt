@@ -54,9 +54,14 @@ class WallpaperCollectRepoImpl @Inject constructor(
         return wallpaperCollectAPI.profile()
     }
 
-    override suspend fun profilePictureUpload(image: MultipartBody.Part): Any {
+    override suspend fun profilePictureUpload(image: MultipartBody.Part): Status {
         return wallpaperCollectAPI.profilePictureUpload(image)
     }
+
+    override suspend fun profilePictureUpdate(image: MultipartBody.Part): Status {
+        return wallpaperCollectAPI.profilePictureUpdate(image)
+    }
+
 
     override suspend fun getImages(imageId: String): Any {
         return wallpaperCollectAPI.getImage(imageId)

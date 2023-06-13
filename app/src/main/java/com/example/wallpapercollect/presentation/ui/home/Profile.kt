@@ -2,7 +2,13 @@ package com.example.wallpapercollect.presentation.ui.home
 
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
+import android.provider.OpenableColumns
 import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -24,7 +30,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,11 +47,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.wallpapercollect.R
+import com.example.wallpapercollect.api.models.Status
 import com.example.wallpapercollect.presentation.ui.theme.brand500
 import com.example.wallpapercollect.presentation.ui.utils.BoxContent
 import com.example.wallpapercollect.presentation.ui.utils.PhotoProfileCustom
 import com.example.wallpapercollect.presentation.ui.utils.PhotoProfileDefault
 import com.example.wallpapercollect.presentation.ui.utils.emailSharedPreference
+import com.example.wallpapercollect.presentation.ui.utils.getFileFromUri
 import com.example.wallpapercollect.presentation.ui.utils.isFirstTimeUserToProfile
 import com.example.wallpapercollect.presentation.ui.utils.manipulateActivityUserToProfile
 import com.example.wallpapercollect.presentation.ui.utils.manipulateEmailSharedPreference
@@ -52,6 +64,9 @@ import com.example.wallpapercollect.presentation.ui.utils.phoneNumberSharedPrefe
 import com.example.wallpapercollect.presentation.ui.utils.photoProfileSharedPreference
 import com.example.wallpapercollect.presentation.ui.utils.userNameSharedPreference
 import com.example.wallpapercollect.presentation.viewmodel.profile.Profile
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -62,6 +77,7 @@ fun ScreenProfile(
 ) {
     val context = LocalContext.current
     val profileInfo = profile.profileInfo.collectAsState().value
+
 
     if(isFirstTimeUserToProfile(context)){
         manipulateActivityUserToProfile(context,false)
@@ -98,6 +114,7 @@ fun ScreenProfile(
             photoProfile = profileInfo.photoProfile,
             location = "Indonesian",
             isAuthor = false,
+            profile = profile,
             navController = navController
         ) }
     )
@@ -112,9 +129,18 @@ fun ProfileBody(
     email: String,
     location: String,
     isAuthor :Boolean,
+    profile: Profile = hiltViewModel(),
     navController: NavController
 ) {
     val context = LocalContext.current
+    var imagePart by rememberSaveable { mutableStateOf<MultipartBody.Part?>(null) }
+    var isCameraButtonClicked by rememberSaveable { mutableStateOf(false) }
+    var isCallRequest  by rememberSaveable { mutableStateOf(false) }
+    var isInitialUpload  by rememberSaveable { mutableStateOf(false) }
+    val isUploadPhotoProfileCompleted = profile.isUploadPhotoProfileCompleted.collectAsState(false).value
+    val photoProfileInitialUpload = profile.photoProfileUploadStatus.collectAsState(Status("")).value
+    val photoProfileUpdate = profile.photoProfileUpdateStatus.collectAsState(Status("")).value
+
 
 
     if(userName!=""&& userNameSharedPreference(context)!= userName) manipulateUserNameSharedPreference(context,userName)
@@ -123,21 +149,97 @@ fun ProfileBody(
     if(email!=""&& emailSharedPreference(context) != email) manipulateEmailSharedPreference(context, email)
 
 
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = {
+            if (it.resultCode==Activity.RESULT_OK){
+
+                val imageUri = it.data?.data!!
+                val contentResolver = context.contentResolver
+                val cacheDir = context.cacheDir
+                var fileName = ""
+                val cursor = contentResolver.query(imageUri,null, null, null, null)
+
+                cursor?.use {curs->
+                    if (curs.moveToFirst()){
+                        val displayNameIndex = curs.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                        if (displayNameIndex != -1) fileName = curs.getString(displayNameIndex)
+                    }
+                }
+
+                val imageFile = getFileFromUri(contentResolver,imageUri,cacheDir)
+
+                if (imageFile.exists()){
+                    val requestBody = imageFile.asRequestBody("image/*".toMediaType())
+                    imagePart = MultipartBody.Part.createFormData("Image", fileName, requestBody)
+
+                    isCameraButtonClicked = true
+                }
+            }else{
+                Toast.makeText(context,"Try again",Toast.LENGTH_LONG).show()
+            }
+        }
+    )
+
+
+
     Column(modifier = Modifier.fillMaxSize()) {
         TopPartOfProfile(
-            photoProfile = photoProfileSharedPreference(context),
-            userName = userNameSharedPreference(context),
+            photoProfile = photoProfile,
+            userName = userName,
             onClickPhoto = { /*TODO onClickPhoto*/ Log.d("photo", "clicked") },
-            onClickCameraIcon = { /*TODO onClickCamera*/ },
+            onClickCameraIcon = {
+                                launcher.launch(
+                                    Intent().setType("image/*").setAction(Intent.ACTION_GET_CONTENT)
+                                )
+            },
             onClickEdit = {/*TODO edit*/},
             isAuthor = isAuthor
         )
         BottomPartOfProfile(
-            phoneNumber = phoneNumberSharedPreference(context),
-            email = emailSharedPreference(context),
+            phoneNumber = phoneNumber,
+            email = email,
             location = location,
             isAuthor = isAuthor
         ) {/*TODO make onCLick delete account*/ }
+    }
+
+    if (isCameraButtonClicked){
+        isCameraButtonClicked = false
+        isCallRequest = true
+
+        if(photoProfile=="") {
+            isInitialUpload = true
+            profile.uploadPhotoProfile(imagePart!!)
+        }else{
+            isInitialUpload = false
+            profile.updatePhotoProfile(imagePart!!)
+        }
+    }
+
+    if (isInitialUpload) {
+        imagePart = null
+        if (
+            isCallRequest &&
+            isUploadPhotoProfileCompleted &&
+            photoProfileInitialUpload.status == "ok"
+        ) {
+            isCallRequest = false
+
+            profile.getProfileInfo()
+            Toast.makeText(context, "Photo Profile Changed", Toast.LENGTH_LONG).show()
+        }
+    }else{
+        if (
+            isCallRequest &&
+            isUploadPhotoProfileCompleted &&
+            photoProfileUpdate.status == "ok"
+        ) {
+            isCallRequest = false
+
+            profile.getProfileInfo()
+            Toast.makeText(context, "Photo Profile Changed", Toast.LENGTH_LONG).show()
+        }
     }
 }
 
