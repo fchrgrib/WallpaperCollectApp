@@ -8,6 +8,7 @@ import com.example.wallpapercollect.api.models.Url
 import com.example.wallpapercollect.api.models.UserDescription
 import com.example.wallpapercollect.api.models.UserLogIn
 import com.example.wallpapercollect.api.models.UserRegister
+import com.example.wallpapercollect.api.models.UserUpdate
 import okhttp3.MultipartBody
 import javax.inject.Inject
 
@@ -52,6 +53,10 @@ class WallpaperCollectRepoImpl @Inject constructor(
 
     override suspend fun profile(): UserDescription {
         return wallpaperCollectAPI.profile()
+    }
+
+    override suspend fun updateProfileDesc(userUpdate: UserUpdate): Status {
+        return wallpaperCollectAPI.updateProfileDesc(userUpdate)
     }
 
     override suspend fun profilePictureUpload(image: MultipartBody.Part): Status {

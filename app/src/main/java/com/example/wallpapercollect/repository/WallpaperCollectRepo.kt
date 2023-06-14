@@ -7,6 +7,7 @@ import com.example.wallpapercollect.api.models.Url
 import com.example.wallpapercollect.api.models.UserDescription
 import com.example.wallpapercollect.api.models.UserLogIn
 import com.example.wallpapercollect.api.models.UserRegister
+import com.example.wallpapercollect.api.models.UserUpdate
 import okhttp3.MultipartBody
 
 interface WallpaperCollectRepo {
@@ -24,6 +25,7 @@ interface WallpaperCollectRepo {
 
 
     suspend fun profile():UserDescription
+    suspend fun updateProfileDesc(userUpdate: UserUpdate):Status
     suspend fun profilePictureUpload(image : MultipartBody.Part): Status
     suspend fun profilePictureUpdate(image : MultipartBody.Part): Status
 

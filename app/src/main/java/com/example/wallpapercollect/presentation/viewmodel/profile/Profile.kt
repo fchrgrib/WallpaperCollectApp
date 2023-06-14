@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.wallpapercollect.api.models.Status
 import com.example.wallpapercollect.api.models.UserDescription
+import com.example.wallpapercollect.api.models.UserUpdate
 import com.example.wallpapercollect.repository.WallpaperCollectRepoImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,11 +21,14 @@ class Profile @Inject constructor(
     private val _profileInfo = MutableStateFlow(UserDescription("","","","",""))
     private val _photoProfileUploadStatus = MutableStateFlow(Status(""))
     private val _photoProfileUpdateStatus = MutableStateFlow(Status(""))
+    private val _descProfileUpdateStatus = MutableStateFlow(Status(""))
 
     val profileInfo = _profileInfo
     val photoProfileUploadStatus = _photoProfileUploadStatus
     val photoProfileUpdateStatus = _photoProfileUpdateStatus
+    val descProfileUpdateStatus = _descProfileUpdateStatus
     val isUploadPhotoProfileCompleted = MutableStateFlow(false)
+    val isUpdateProfileDescCompleted = MutableStateFlow(false)
 
 
     fun getProfileInfo(){
@@ -61,6 +65,19 @@ class Profile @Inject constructor(
                 _photoProfileUpdateStatus.emit(Status(e.message.toString()))
             }
             isUploadPhotoProfileCompleted.emit(true)
+        }
+    }
+
+    fun updateProfileDesc(userUpdate: UserUpdate){
+        viewModelScope.launch {
+            isUpdateProfileDescCompleted.emit(false)
+            try {
+                val response = wallpaperCollectRepoImpl.updateProfileDesc(userUpdate)
+                _descProfileUpdateStatus.emit(response)
+            }catch (e:Exception){
+                _descProfileUpdateStatus.emit(Status(e.message.toString()))
+            }
+            isUpdateProfileDescCompleted.emit(true)
         }
     }
 }

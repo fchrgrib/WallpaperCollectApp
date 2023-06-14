@@ -48,12 +48,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.wallpapercollect.R
 import com.example.wallpapercollect.api.models.Status
+import com.example.wallpapercollect.api.models.UserUpdate
 import com.example.wallpapercollect.presentation.ui.theme.brand300
 import com.example.wallpapercollect.presentation.ui.theme.brand500
 import com.example.wallpapercollect.presentation.ui.utils.BoxContent
 import com.example.wallpapercollect.presentation.ui.utils.PhotoProfileCustom
 import com.example.wallpapercollect.presentation.ui.utils.PhotoProfileDefault
-import com.example.wallpapercollect.presentation.ui.utils.TextFieldLogRes
 import com.example.wallpapercollect.presentation.ui.utils.TextFieldProfile
 import com.example.wallpapercollect.presentation.ui.utils.emailSharedPreference
 import com.example.wallpapercollect.presentation.ui.utils.getFileFromUri
@@ -143,9 +143,12 @@ fun ProfileBody(
     var isInitialUpload  by rememberSaveable { mutableStateOf(false) }
     var isEditButtonClicked by rememberSaveable { mutableStateOf(false) }
     val isUploadPhotoProfileCompleted = profile.isUploadPhotoProfileCompleted.collectAsState(false).value
+    val isUpdateProfileDescCompleted = profile.isUpdateProfileDescCompleted.collectAsState(false).value
+    var isPostUpdateDescProfileClicked by rememberSaveable { mutableStateOf(false) }
     
-    val photoProfileInitialUpload = profile.photoProfileUploadStatus.collectAsState(Status("")).value
-    val photoProfileUpdate = profile.photoProfileUpdateStatus.collectAsState(Status("")).value
+    val photoProfileInitialUploadStatus = profile.photoProfileUploadStatus.collectAsState(Status("")).value
+    val photoProfileUpdateStatus = profile.photoProfileUpdateStatus.collectAsState(Status("")).value
+    val descProfileUpdateStatus = profile.descProfileUpdateStatus.collectAsState(Status("")).value
 
     var userNameContent by rememberSaveable { mutableStateOf("") }
     var emailContent by rememberSaveable { mutableStateOf("") }
@@ -216,7 +219,14 @@ fun ProfileBody(
             isAuthor = isAuthor,
             isEditButtonClicked = isEditButtonClicked,
             onClickDeleteAccount = {},
-            onClickEdit = {}
+            onClickEdit = {
+                profile.updateProfileDesc(UserUpdate(
+                    userName = userNameContent,
+                    email = emailContent,
+                    phoneNumber = phoneNumberContent
+                ))
+                isPostUpdateDescProfileClicked = true
+            }
         )
     }
 
@@ -238,7 +248,7 @@ fun ProfileBody(
         if (
             isCallRequest &&
             isUploadPhotoProfileCompleted &&
-            photoProfileInitialUpload.status == "ok"
+            photoProfileInitialUploadStatus.status == "ok"
         ) {
             isCallRequest = false
 
@@ -249,13 +259,26 @@ fun ProfileBody(
         if (
             isCallRequest &&
             isUploadPhotoProfileCompleted &&
-            photoProfileUpdate.status == "ok"
+            photoProfileUpdateStatus.status == "ok"
         ) {
             isCallRequest = false
 
             profile.getProfileInfo()
             Toast.makeText(context, "Photo Profile Changed", Toast.LENGTH_LONG).show()
         }
+    }
+
+
+
+    if (
+        isPostUpdateDescProfileClicked&&
+        descProfileUpdateStatus.status=="ok"&&
+        isUpdateProfileDescCompleted
+    ){
+        isPostUpdateDescProfileClicked = false
+
+        profile.getProfileInfo()
+        Toast.makeText(context, "Profile Updated", Toast.LENGTH_LONG).show()
     }
 }
 
@@ -309,7 +332,7 @@ fun BottomPartOfProfile(
 
                     ) {
                         Text(
-                            text = "Delete Account",
+                            text = "POST",
                             textAlign = TextAlign.Center,
                             fontSize = 16.sp
                         )
