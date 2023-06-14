@@ -56,7 +56,7 @@ fun TextHeaderLogRes(header :String, description:String) {
 
 
 @Composable
-fun TextFieldLogRes(placeHolder:String, content : (String) -> Unit) {
+fun TextFieldLogRes(placeHolder:String, content : (String) -> Unit,isVisible:Boolean) {
     var text by rememberSaveable {
         mutableStateOf("")
     }
@@ -87,6 +87,7 @@ fun TextFieldLogRes(placeHolder:String, content : (String) -> Unit) {
             unfocusedIndicatorColor = Color.Transparent,
             disabledTextColor = gray200
         ),
+        visualTransformation = if (isVisible) PasswordVisualTransformation('*') else VisualTransformation.None,
         shape = RoundedCornerShape(10.dp)
     )
 }

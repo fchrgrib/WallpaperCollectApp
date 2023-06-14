@@ -48,10 +48,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.wallpapercollect.R
 import com.example.wallpapercollect.api.models.Status
+import com.example.wallpapercollect.presentation.ui.theme.brand300
 import com.example.wallpapercollect.presentation.ui.theme.brand500
 import com.example.wallpapercollect.presentation.ui.utils.BoxContent
 import com.example.wallpapercollect.presentation.ui.utils.PhotoProfileCustom
 import com.example.wallpapercollect.presentation.ui.utils.PhotoProfileDefault
+import com.example.wallpapercollect.presentation.ui.utils.TextFieldLogRes
+import com.example.wallpapercollect.presentation.ui.utils.TextFieldProfile
 import com.example.wallpapercollect.presentation.ui.utils.emailSharedPreference
 import com.example.wallpapercollect.presentation.ui.utils.getFileFromUri
 import com.example.wallpapercollect.presentation.ui.utils.isFirstTimeUserToProfile
@@ -134,13 +137,19 @@ fun ProfileBody(
 ) {
     val context = LocalContext.current
     var imagePart by rememberSaveable { mutableStateOf<MultipartBody.Part?>(null) }
+    
     var isCameraButtonClicked by rememberSaveable { mutableStateOf(false) }
     var isCallRequest  by rememberSaveable { mutableStateOf(false) }
     var isInitialUpload  by rememberSaveable { mutableStateOf(false) }
+    var isEditButtonClicked by rememberSaveable { mutableStateOf(false) }
     val isUploadPhotoProfileCompleted = profile.isUploadPhotoProfileCompleted.collectAsState(false).value
+    
     val photoProfileInitialUpload = profile.photoProfileUploadStatus.collectAsState(Status("")).value
     val photoProfileUpdate = profile.photoProfileUpdateStatus.collectAsState(Status("")).value
 
+    var userNameContent by rememberSaveable { mutableStateOf("") }
+    var emailContent by rememberSaveable { mutableStateOf("") }
+    var phoneNumberContent by rememberSaveable { mutableStateOf("") }
 
 
     if(userName!=""&& userNameSharedPreference(context)!= userName) manipulateUserNameSharedPreference(context,userName)
@@ -193,15 +202,22 @@ fun ProfileBody(
                                     Intent().setType("image/*").setAction(Intent.ACTION_GET_CONTENT)
                                 )
             },
-            onClickEdit = {/*TODO edit*/},
+            onClickEdit = {isEditButtonClicked = !isEditButtonClicked},
             isAuthor = isAuthor
         )
         BottomPartOfProfile(
+            userName = userName,
             phoneNumber = phoneNumber,
             email = email,
+            userNameContent = { userNameContent = it },
+            phoneNumberContent = {phoneNumberContent = it},
+            emailContent = {emailContent = it},
             location = location,
-            isAuthor = isAuthor
-        ) {/*TODO make onCLick delete account*/ }
+            isAuthor = isAuthor,
+            isEditButtonClicked = isEditButtonClicked,
+            onClickDeleteAccount = {},
+            onClickEdit = {}
+        )
     }
 
     if (isCameraButtonClicked){
@@ -245,18 +261,34 @@ fun ProfileBody(
 
 @Composable
 fun BottomPartOfProfile(
+    userName: String,
     phoneNumber :String,
     email :String,
     location :String,
     isAuthor: Boolean,
-    onClickDeleteAccount : () -> Unit
+    userNameContent: (String) -> Unit,
+    phoneNumberContent : (String) -> Unit,
+    emailContent :(String) -> Unit,
+    isEditButtonClicked:Boolean,
+    onClickDeleteAccount : () -> Unit,
+    onClickEdit: () -> Unit
 ) {
-    Column(modifier = Modifier
-        .padding(horizontal = 24.dp)
-        .fillMaxSize()) {
-        BoxContent(startText = "Phone", endText = phoneNumber)
-        BoxContent(startText = "Email", endText = email)
-        BoxContent(startText = "Location", endText = location)
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 24.dp)
+            .fillMaxSize()
+    ) {
+        
+        if (isEditButtonClicked){
+            TextFieldProfile(placeHolder = "User Name", content = {userNameContent(it)}, firstContent = userName)
+            TextFieldProfile(placeHolder = "Phone", content = {phoneNumberContent(it)}, firstContent = phoneNumber)
+            TextFieldProfile(placeHolder = "Email", content = {emailContent(it)}, firstContent = email)
+        }else {
+            BoxContent(startText = "Phone", endText = phoneNumber)
+            BoxContent(startText = "Email", endText = email)
+            BoxContent(startText = "Location", endText = location)
+        }
+        
         Box(
             contentAlignment = Alignment.BottomCenter,
             modifier = Modifier
@@ -264,22 +296,42 @@ fun BottomPartOfProfile(
                 .padding(bottom = 34.dp)
         ) {
             if (!isAuthor) {
-                Button(
-                    onClick = onClickDeleteAccount,
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFFF8092)
-                    )
+                if (isEditButtonClicked){
+                    Button(
+                        onClick = onClickEdit,
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = brand300
+                        )
 
-                ) {
-                    Text(
-                        text = "Delete Account",
-                        textAlign = TextAlign.Center,
-                        fontSize = 16.sp
-                    )
+                    ) {
+                        Text(
+                            text = "Delete Account",
+                            textAlign = TextAlign.Center,
+                            fontSize = 16.sp
+                        )
+                    }
+                }else {
+                    Button(
+                        onClick = onClickDeleteAccount,
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFFF8092)
+                        )
+
+                    ) {
+                        Text(
+                            text = "Delete Account",
+                            textAlign = TextAlign.Center,
+                            fontSize = 16.sp
+                        )
+                    }
                 }
             }
         }

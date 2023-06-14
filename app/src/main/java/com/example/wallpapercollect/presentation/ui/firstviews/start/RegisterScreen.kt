@@ -221,19 +221,19 @@ fun BodyRegisterEmail(
         ) {
 
 
-            TextFieldLogRes(placeHolder = "Enter your Email", content = { email(it) })
+            TextFieldLogRes(placeHolder = "Enter your Email", content = { email(it) },isVisible = false)
             Spacer(modifier = Modifier.padding(top = 16.dp))
 
-            TextFieldLogRes(placeHolder = "Full name", content = { fullName(it) })
+            TextFieldLogRes(placeHolder = "Full name", content = { fullName(it) },isVisible = false)
             Spacer(modifier = Modifier.padding(top = 16.dp))
 
-            TextFieldLogRes(placeHolder = "Phone number", content = { phoneNumber(it) })
+            TextFieldLogRes(placeHolder = "Phone number", content = { phoneNumber(it) },isVisible = false)
             Spacer(modifier = Modifier.padding(top = 16.dp))
 
             TextFieldLogResPass(placeHolder = "Password", content = { password(it) })
             Spacer(modifier = Modifier.padding(top = 16.dp))
 
-            TextFieldLogRes(placeHolder = "Confirm Password", content = { confirmPassword(it) })
+            TextFieldLogRes(placeHolder = "Confirm Password", content = { confirmPassword(it) },isVisible = true)
             Spacer(modifier = Modifier.padding(top = 28.dp))
 
             LogResButton(textButton = "Register", onClickable = onClickRegisterDefault)
