@@ -20,8 +20,6 @@ class MainActivity : AppCompatActivity() {
         setContent {
             supportActionBar?.hide()
 
-
-
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(stringResource(R.string.google_token))
                 .requestProfile()

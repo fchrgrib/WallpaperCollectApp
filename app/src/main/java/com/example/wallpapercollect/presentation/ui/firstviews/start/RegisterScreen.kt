@@ -159,6 +159,7 @@ fun RegisterEmailScreen(
         isRegisterGoogleSessionClicked
     ){
         isRegisterGoogleSessionClicked = false
+        Toast.makeText(LocalContext.current,"Registered successfully",Toast.LENGTH_LONG).show()
 
         navController.navigate(NavigationRouters.LOGIN){
             popUpTo(NavigationRouters.REGISTER){inclusive = true}

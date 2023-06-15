@@ -55,6 +55,10 @@ class WallpaperCollectRepoImpl @Inject constructor(
         return wallpaperCollectAPI.profile()
     }
 
+    override suspend fun deleteUser(): Status {
+        return wallpaperCollectAPI.deleteUser()
+    }
+
     override suspend fun updateProfileDesc(userUpdate: UserUpdate): Status {
         return wallpaperCollectAPI.updateProfileDesc(userUpdate)
     }

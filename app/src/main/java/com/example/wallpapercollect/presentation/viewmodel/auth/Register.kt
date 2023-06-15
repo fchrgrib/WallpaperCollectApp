@@ -1,7 +1,6 @@
 package com.example.wallpapercollect.presentation.viewmodel.auth
 
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.wallpapercollect.api.models.Status
@@ -10,7 +9,6 @@ import com.example.wallpapercollect.api.models.Url
 import com.example.wallpapercollect.api.models.UserRegister
 import com.example.wallpapercollect.repository.WallpaperCollectRepoImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch

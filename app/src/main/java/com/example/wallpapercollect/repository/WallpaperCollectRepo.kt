@@ -25,6 +25,7 @@ interface WallpaperCollectRepo {
 
 
     suspend fun profile():UserDescription
+    suspend fun deleteUser():Status
     suspend fun updateProfileDesc(userUpdate: UserUpdate):Status
     suspend fun profilePictureUpload(image : MultipartBody.Part): Status
     suspend fun profilePictureUpdate(image : MultipartBody.Part): Status

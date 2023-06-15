@@ -26,35 +26,3 @@ fun manipulateActivityUserToWallpaper(context : Context, boolean: Boolean) {
     val sharedPrefs = context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
     sharedPrefs.edit().putBoolean("isFirstTimeUserToWallpaper", boolean).apply()
 }
-fun userNameSharedPreference(context: Context):String{
-    val sharedPrefs = context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
-    return sharedPrefs.getString("userNameProfile","")?:""
-}
-fun manipulateUserNameSharedPreference(context: Context, userName:String){
-    val sharedPrefs = context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
-    sharedPrefs.edit().putString("userNameProfile",userName).apply()
-}
-fun phoneNumberSharedPreference(context: Context):String{
-    val sharedPrefs = context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
-    return sharedPrefs.getString("phoneNumberProfile","")?:""
-}
-fun manipulatePhoneNumberSharedPreference(context: Context, userName:String){
-    val sharedPrefs = context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
-    sharedPrefs.edit().putString("phoneNumberProfile",userName).apply()
-}
-fun emailSharedPreference(context: Context):String{
-    val sharedPrefs = context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
-    return sharedPrefs.getString("emailProfile","")?:""
-}
-fun manipulateEmailSharedPreference(context: Context, userName:String){
-    val sharedPrefs = context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
-    sharedPrefs.edit().putString("emailProfile",userName).apply()
-}
-fun photoProfileSharedPreference(context: Context):String{
-    val sharedPrefs = context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
-    return sharedPrefs.getString("photoProfile","")?:""
-}
-fun manipulatePhotoProfileSharedPreference(context: Context, userName:String){
-    val sharedPrefs = context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
-    sharedPrefs.edit().putString("photoProfile",userName).apply()
-}

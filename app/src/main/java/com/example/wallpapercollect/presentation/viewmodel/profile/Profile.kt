@@ -22,13 +22,18 @@ class Profile @Inject constructor(
     private val _photoProfileUploadStatus = MutableStateFlow(Status(""))
     private val _photoProfileUpdateStatus = MutableStateFlow(Status(""))
     private val _descProfileUpdateStatus = MutableStateFlow(Status(""))
+    private val _userDeleteStatus = MutableStateFlow(Status(""))
 
     val profileInfo = _profileInfo
     val photoProfileUploadStatus = _photoProfileUploadStatus
     val photoProfileUpdateStatus = _photoProfileUpdateStatus
     val descProfileUpdateStatus = _descProfileUpdateStatus
+    val userDeleteStatus = _userDeleteStatus
+
+
     val isUploadPhotoProfileCompleted = MutableStateFlow(true)
     val isUpdateProfileDescCompleted = MutableStateFlow(false)
+    val isUserDelete = MutableStateFlow(false)
 
 
     fun getProfileInfo(){
@@ -39,6 +44,19 @@ class Profile @Inject constructor(
             }catch (e :Exception){
                 _profileInfo.emit(UserDescription("","","","",e.message.toString()))
             }
+        }
+    }
+
+    fun deleteUser(){
+        viewModelScope.launch {
+            isUserDelete.value = false
+            try {
+                val response = wallpaperCollectRepoImpl.deleteUser()
+                _userDeleteStatus.emit(response)
+            }catch (e:Exception){
+                _userDeleteStatus.emit(Status(e.message.toString()))
+            }
+            isUserDelete.value = true
         }
     }
 

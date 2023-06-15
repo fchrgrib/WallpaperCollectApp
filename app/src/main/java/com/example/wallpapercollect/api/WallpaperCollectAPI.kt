@@ -5,14 +5,13 @@ import com.example.wallpapercollect.api.models.Status
 import com.example.wallpapercollect.api.models.Token
 import com.example.wallpapercollect.api.models.Url
 import com.example.wallpapercollect.api.models.UserDescription
-import com.example.wallpapercollect.api.models.UserRegister
 import com.example.wallpapercollect.api.models.UserLogIn
+import com.example.wallpapercollect.api.models.UserRegister
 import com.example.wallpapercollect.api.models.UserUpdate
 import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.Headers
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -68,6 +67,9 @@ interface WallpaperCollectAPI {
     /**PROFILE INFO**/
     @GET(ApiEndPoints.VIEW_PROFILE)
     suspend fun profile():UserDescription
+
+    @DELETE(ApiEndPoints.DELETE_USER)
+    suspend fun deleteUser():Status
 
     @PUT(ApiEndPoints.UPDATE_PROFILE_DESC)
     suspend fun updateProfileDesc(

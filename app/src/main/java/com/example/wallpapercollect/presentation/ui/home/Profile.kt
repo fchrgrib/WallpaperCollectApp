@@ -6,6 +6,7 @@ import android.app.Activity
 import android.content.Intent
 import android.provider.OpenableColumns
 import android.util.Log
+import android.webkit.CookieManager
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,11 +23,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
@@ -49,23 +52,17 @@ import androidx.navigation.NavController
 import com.example.wallpapercollect.R
 import com.example.wallpapercollect.api.models.Status
 import com.example.wallpapercollect.api.models.UserUpdate
+import com.example.wallpapercollect.presentation.ui.navigation.NavigationRouters
 import com.example.wallpapercollect.presentation.ui.theme.brand300
 import com.example.wallpapercollect.presentation.ui.theme.brand500
+import com.example.wallpapercollect.presentation.ui.theme.interFont
 import com.example.wallpapercollect.presentation.ui.utils.BoxContent
 import com.example.wallpapercollect.presentation.ui.utils.PhotoProfileCustom
 import com.example.wallpapercollect.presentation.ui.utils.PhotoProfileDefault
 import com.example.wallpapercollect.presentation.ui.utils.TextFieldProfile
-import com.example.wallpapercollect.presentation.ui.utils.emailSharedPreference
 import com.example.wallpapercollect.presentation.ui.utils.getFileFromUri
 import com.example.wallpapercollect.presentation.ui.utils.isFirstTimeUserToProfile
 import com.example.wallpapercollect.presentation.ui.utils.manipulateActivityUserToProfile
-import com.example.wallpapercollect.presentation.ui.utils.manipulateEmailSharedPreference
-import com.example.wallpapercollect.presentation.ui.utils.manipulatePhoneNumberSharedPreference
-import com.example.wallpapercollect.presentation.ui.utils.manipulatePhotoProfileSharedPreference
-import com.example.wallpapercollect.presentation.ui.utils.manipulateUserNameSharedPreference
-import com.example.wallpapercollect.presentation.ui.utils.phoneNumberSharedPreference
-import com.example.wallpapercollect.presentation.ui.utils.photoProfileSharedPreference
-import com.example.wallpapercollect.presentation.ui.utils.userNameSharedPreference
 import com.example.wallpapercollect.presentation.viewmodel.profile.Profile
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -143,12 +140,19 @@ fun ProfileBody(
     var isInitialUpload  by rememberSaveable { mutableStateOf(false) }
     var isEditButtonClicked by rememberSaveable { mutableStateOf(false) }
     val isUploadPhotoProfileCompleted = profile.isUploadPhotoProfileCompleted.collectAsState(true).value
+
     val isUpdateProfileDescCompleted = profile.isUpdateProfileDescCompleted.collectAsState(false).value
     var isPostUpdateDescProfileClicked by rememberSaveable { mutableStateOf(false) }
+
+    val isDeleteUserSuccess = profile.isUserDelete.collectAsState(false).value
+    var isDeleteButtonClicked by rememberSaveable { mutableStateOf(false) }
+    var isUserWantToDelete:Boolean? by rememberSaveable { mutableStateOf(null) }
+    var isRequestCalledForDelete by rememberSaveable { mutableStateOf(false) }
     
     val photoProfileInitialUploadStatus = profile.photoProfileUploadStatus.collectAsState(Status("")).value
     val photoProfileUpdateStatus = profile.photoProfileUpdateStatus.collectAsState(Status("")).value
     val descProfileUpdateStatus = profile.descProfileUpdateStatus.collectAsState(Status("")).value
+    val userDeleteStatus = profile.userDeleteStatus.collectAsState(Status("")).value
 
     var userNameContent by rememberSaveable { mutableStateOf("") }
     var emailContent by rememberSaveable { mutableStateOf("") }
@@ -216,7 +220,9 @@ fun ProfileBody(
             location = location,
             isAuthor = isAuthor,
             isEditButtonClicked = isEditButtonClicked,
-            onClickDeleteAccount = {},
+            onClickDeleteAccount = {
+                isDeleteButtonClicked = true
+            },
             onClickEdit = {
                 profile.updateProfileDesc(UserUpdate(
                     userName = userNameContent,
@@ -227,6 +233,54 @@ fun ProfileBody(
             }
         )
     }
+
+
+    if (isDeleteButtonClicked){
+        AlertDialog(
+            onDismissRequest = {isDeleteButtonClicked = false},
+            title = { Text(text = "Delete Account", fontWeight = FontWeight.Bold, fontFamily = interFont)},
+            text = {Text(text = "Do you want to delete your account", fontWeight = FontWeight.Normal, fontFamily = interFont)},
+            dismissButton = {
+                            TextButton(onClick = {
+                                isDeleteButtonClicked = false
+                                isUserWantToDelete = false
+                            }) {
+                                Text(text = "no")
+                            }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    isDeleteButtonClicked = false
+                    isUserWantToDelete = true
+                }) {
+                    Text(text = "yes")
+                }
+            },
+        )
+    }
+
+    if (isUserWantToDelete == true){
+        isUserWantToDelete = null
+        isRequestCalledForDelete = true
+
+        profile.deleteUser()
+    }
+    if (
+        isRequestCalledForDelete&&
+        isDeleteUserSuccess&&
+        userDeleteStatus.status=="ok"
+    ){
+        isRequestCalledForDelete = false
+        Toast.makeText(context,"your account deleted successfully",Toast.LENGTH_LONG).show()
+        CookieManager.getInstance().removeAllCookie()
+
+        navController.navigate(NavigationRouters.LOGIN){
+            popUpTo(NavigationRouters.PROFILE){inclusive = true}
+        }
+        return
+    }
+
+
 
     if (isCameraButtonClicked){
         isCameraButtonClicked = false
