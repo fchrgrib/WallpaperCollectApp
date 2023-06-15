@@ -1,5 +1,6 @@
 package com.example.wallpapercollect.presentation.ui.firstviews.start
 
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -55,6 +56,7 @@ fun GetStarted(
 
     var isLoginGoogleSessionClicked by rememberSaveable { mutableStateOf(false) }
     var isLoginFacebookSessionClicked by rememberSaveable { mutableStateOf(false) }
+    val isLoginGoogleCompleted = login.isGoogleLoginCompleted.collectAsState(false).value
 
     val statusLoginGoogleSession = login.loginGoogleSession.collectAsState(Status("")).value
     val statusLoginFacebookSession = login.loginFacebookSession.collectAsState(Url("","")).value
@@ -99,7 +101,7 @@ fun GetStarted(
                 nameIcon = "email",
                 textButton = "Continue With Email"
             ) {
-                navController.navigate(NavigationRouters.REGISTER)
+                navController.navigate(NavigationRouters.LOGIN)
             }
 
             LogResTripButton(
@@ -131,9 +133,9 @@ fun GetStarted(
 
         Spacer(modifier = Modifier.padding(top = 30.dp))
         Row {
-            Text(text = "Already Have an Account ? ")
-            Text(text = "Sig in", color = brand500, modifier = Modifier.clickable {
-                navController.navigate(NavigationRouters.LOGIN){
+            Text(text = "Don’t have  an  account? ")
+            Text(text = "Sign up", color = brand500, modifier = Modifier.clickable {
+                navController.navigate(NavigationRouters.REGISTER){
                     popUpTo(NavigationRouters.GET_STARTED){ inclusive = true }
                 }
             })
@@ -141,12 +143,26 @@ fun GetStarted(
         Spacer(modifier = Modifier.padding(top = 15.dp))
     }
 
-    if (statusLoginGoogleSession.status == "ok") {
+    if (
+        statusLoginGoogleSession.status == "ok"&&
+        isLoginGoogleSessionClicked
+    ) {
         isLoginGoogleSessionClicked = false
 
         navController.navigate(NavigationRouters.WALLPAPER) {
             popUpTo(NavigationRouters.LOGIN) { inclusive = true }
         }
+        return
+    }else if (
+        statusLoginGoogleSession.status != "ok"&&
+        statusLoginGoogleSession.status != ""&&
+        isLoginGoogleCompleted&&
+        isLoginGoogleSessionClicked
+    ){
+        isLoginGoogleSessionClicked = false
+        gsc.signOut()
+
+        Toast.makeText(LocalContext.current,"your account hadn't registered",Toast.LENGTH_LONG).show()
         return
     }
     if (isLoginGoogleSessionClicked) {

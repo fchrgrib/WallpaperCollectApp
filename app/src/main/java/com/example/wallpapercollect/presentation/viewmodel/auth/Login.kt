@@ -24,6 +24,7 @@ class Login @Inject constructor(
     var loginEmailDefault = _loginEmailDefault
     var loginGoogleSession = _loginGoogleSession
     var loginFacebookSession = _loginFacebookSession
+    val isGoogleLoginCompleted = MutableStateFlow(false)
 
 
 
@@ -40,12 +41,14 @@ class Login @Inject constructor(
 
     fun postLoginGoogleSession(token :Token){
         viewModelScope.launch {
+            isGoogleLoginCompleted.emit(false)
             try {
                 val response = wallpaperCollectRepoImpl.userGoogleLogin(token)
                 _loginGoogleSession.emit(response)
             }catch (e :Exception){
-                _loginGoogleSession.emit(Status(""))
+                _loginGoogleSession.emit(Status(e.message.toString()))
             }
+            isGoogleLoginCompleted.emit(true)
         }
     }
 

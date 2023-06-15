@@ -1,6 +1,7 @@
 package com.example.wallpapercollect.presentation.ui.firstviews.start
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -64,6 +65,7 @@ fun LoginScreen(
 
     var isLoginEmailDefaultSessionClicked by rememberSaveable { mutableStateOf(false) }
     var isLoginGoogleSessionClicked by rememberSaveable { mutableStateOf(false) }
+    val isLoginGoogleCompleted = login.isGoogleLoginCompleted.collectAsState(false).value
     var isLoginFacebookSessionClicked by rememberSaveable { mutableStateOf(false) }
 
 
@@ -143,6 +145,17 @@ fun LoginScreen(
             popUpTo(NavigationRouters.LOGIN) { inclusive = true }
         }
         return
+    }else if (
+        statusLoginGoogleSession.status != "ok"&&
+        statusLoginGoogleSession.status != ""&&
+        isLoginGoogleCompleted&&
+        isLoginGoogleSessionClicked
+    ){
+        isLoginGoogleSessionClicked = false
+        gsc.signOut()
+
+        Toast.makeText(LocalContext.current,"your account hadn't registered", Toast.LENGTH_LONG).show()
+        return
     }
     if (isLoginGoogleSessionClicked) {
 
@@ -150,6 +163,7 @@ fun LoginScreen(
 
         return
     }
+
 
     if(
         statusLoginFacebookSession.status == "ok"&&
