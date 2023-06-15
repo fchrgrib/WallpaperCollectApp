@@ -4,7 +4,7 @@
 
 This is app for collecting wallpaper, you can add and download wallpaper in this app. you can also make a favorite some wallpaper.
 Before you use this app you should register your account with google account or with email @wallpaper.Collect.app. if you already register your account you can login in login screen.
-i use https://github.com/fchrgrib/wallpaperCollectAPI API to build this app.
+i use https://github.com/fchrgrib/wallpaperCollectAPI API to build this app. If you want to download app you can click the APK folder and download the APK.
 
 ## Framework Use
 ```
@@ -12,6 +12,12 @@ i use https://github.com/fchrgrib/wallpaperCollectAPI API to build this app.
 -Jetpack Compose
 -Retrofit
 -Moshi Converter
+```
+
+## Requirements
+```text
+OS : Android
+minSDK : 24
 ```
 
 ## Screen
