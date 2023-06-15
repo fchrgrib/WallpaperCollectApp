@@ -142,7 +142,7 @@ fun ProfileBody(
     var isCallRequest  by rememberSaveable { mutableStateOf(false) }
     var isInitialUpload  by rememberSaveable { mutableStateOf(false) }
     var isEditButtonClicked by rememberSaveable { mutableStateOf(false) }
-    val isUploadPhotoProfileCompleted = profile.isUploadPhotoProfileCompleted.collectAsState(false).value
+    val isUploadPhotoProfileCompleted = profile.isUploadPhotoProfileCompleted.collectAsState(true).value
     val isUpdateProfileDescCompleted = profile.isUpdateProfileDescCompleted.collectAsState(false).value
     var isPostUpdateDescProfileClicked by rememberSaveable { mutableStateOf(false) }
     
@@ -153,12 +153,6 @@ fun ProfileBody(
     var userNameContent by rememberSaveable { mutableStateOf("") }
     var emailContent by rememberSaveable { mutableStateOf("") }
     var phoneNumberContent by rememberSaveable { mutableStateOf("") }
-
-
-    if(userName!=""&& userNameSharedPreference(context)!= userName) manipulateUserNameSharedPreference(context,userName)
-    if(photoProfile!=""&& photoProfileSharedPreference(context) != photoProfile) manipulatePhotoProfileSharedPreference(context,photoProfile)
-    if(phoneNumber!=""&& phoneNumberSharedPreference(context) != phoneNumber) manipulatePhoneNumberSharedPreference(context,phoneNumber)
-    if(email!=""&& emailSharedPreference(context) != email) manipulateEmailSharedPreference(context, email)
 
 
     val launcher = rememberLauncherForActivityResult(
@@ -201,12 +195,16 @@ fun ProfileBody(
             userName = userName,
             onClickPhoto = { /*TODO onClickPhoto*/ Log.d("photo", "clicked") },
             onClickCameraIcon = {
-                                launcher.launch(
-                                    Intent().setType("image/*").setAction(Intent.ACTION_GET_CONTENT)
-                                )
+                                if (isUploadPhotoProfileCompleted) {
+                                    launcher.launch(
+                                        Intent().setType("image/*")
+                                            .setAction(Intent.ACTION_GET_CONTENT)
+                                    )
+                                }
             },
             onClickEdit = {isEditButtonClicked = !isEditButtonClicked},
-            isAuthor = isAuthor
+            isAuthor = isAuthor,
+            isEditButtonClicked = isEditButtonClicked
         )
         BottomPartOfProfile(
             userName = userName,
@@ -256,6 +254,7 @@ fun ProfileBody(
             Toast.makeText(context, "Photo Profile Changed", Toast.LENGTH_LONG).show()
         }
     }else{
+        imagePart = null
         if (
             isCallRequest &&
             isUploadPhotoProfileCompleted &&
@@ -276,6 +275,7 @@ fun ProfileBody(
         isUpdateProfileDescCompleted
     ){
         isPostUpdateDescProfileClicked = false
+        isEditButtonClicked = false
 
         profile.getProfileInfo()
         Toast.makeText(context, "Profile Updated", Toast.LENGTH_LONG).show()
@@ -304,7 +304,9 @@ fun BottomPartOfProfile(
         
         if (isEditButtonClicked){
             TextFieldProfile(placeHolder = "User Name", content = {userNameContent(it)}, firstContent = userName)
+            Spacer(modifier = Modifier.padding(top = 16.dp))
             TextFieldProfile(placeHolder = "Phone", content = {phoneNumberContent(it)}, firstContent = phoneNumber)
+            Spacer(modifier = Modifier.padding(top = 16.dp))
             TextFieldProfile(placeHolder = "Email", content = {emailContent(it)}, firstContent = email)
         }else {
             BoxContent(startText = "Phone", endText = phoneNumber)
@@ -370,7 +372,8 @@ fun TopPartOfProfile(
     onClickPhoto : () -> Unit,
     onClickCameraIcon: () -> Unit,
     onClickEdit : () -> Unit,
-    isAuthor: Boolean
+    isAuthor: Boolean,
+    isEditButtonClicked: Boolean
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     Box {
@@ -405,7 +408,7 @@ fun TopPartOfProfile(
 
                     if (photoProfile != "") PhotoProfileCustom(photoProfile = photoProfile, onClickPhoto = onClickPhoto,isAuthor = isAuthor)
                     else PhotoProfileDefault(onClickPhoto = onClickPhoto, isAuthor = isAuthor)
-                    if(!isAuthor) {
+                    if(!isAuthor&&!isEditButtonClicked) {
                         Icon(
                             painter = painterResource(id = R.drawable.camera),
                             contentDescription = "camera",
@@ -428,7 +431,7 @@ fun TopPartOfProfile(
                         fontSize = 24.sp
                     )
                     Spacer(modifier = Modifier.padding(7.dp))
-                    if (!isAuthor) {
+                    if (!isAuthor&&!isEditButtonClicked) {
                         Icon(
                             painter = painterResource(id = R.drawable.edit),
                             contentDescription = "edit button",

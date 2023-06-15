@@ -148,7 +148,9 @@ fun DownloadBody(
 ) {
 
     var isClicked:Boolean by rememberSaveable { mutableStateOf(false) }
-    val imageUrl:String by rememberSaveable { mutableStateOf("${ApiConstants.BASE_URL}images/$id/") }
+
+
+
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -157,8 +159,8 @@ fun DownloadBody(
 
 
         AsyncImage(
-            model = imageUrl,
-            contentDescription = "wallpaper ${id}",
+            model = "${ApiConstants.BASE_URL}images/$id/",
+            contentDescription = "wallpaper $id",
             contentScale = ContentScale.Fit,
             modifier = Modifier.fillMaxSize()
         )

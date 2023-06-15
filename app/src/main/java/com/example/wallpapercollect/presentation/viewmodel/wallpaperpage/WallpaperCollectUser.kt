@@ -19,7 +19,7 @@ class WallpaperCollectUser @Inject constructor(
 ): ViewModel() {
 
     private val _isLoading = MutableStateFlow(false)
-    private val _isUploadCompleted = MutableStateFlow(false)
+    private val _isUploadCompleted = MutableStateFlow(true)
     private val _wallpaperCollection = MutableStateFlow(ImagesCollections(ArrayList(),""))
     private val _wallpaperUploadStatus = MutableStateFlow(Status(""))
     private val _wallpaperDeleteStatus = MutableStateFlow(Status(""))

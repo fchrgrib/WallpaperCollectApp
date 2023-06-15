@@ -182,7 +182,7 @@ fun BodyLoginScreen(
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-            TextFieldLogRes(placeHolder = "Enter your email", content = {email(it)})
+            TextFieldLogRes(placeHolder = "Enter your email", content = {email(it)},isVisible = false)
             Spacer(modifier = Modifier.padding(top = 16.dp))
 
             TextFieldLogResPass(placeHolder = "Enter your password", content = {password(it)})

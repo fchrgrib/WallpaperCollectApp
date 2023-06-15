@@ -20,6 +20,7 @@ object ApiEndPoints{
     // WALLPAPER PAGE
     const val WALLPAPER_COLLECTION = "wallpaper"
     const val UPLOAD_WALLPAPER = "wallpaper/upload"
+    const val ALL_WALLPAPER = "wallpaper/images"
 
     // PROFILE INFO
     const val UPDATE_PROFILE = "wallpaper/profile/update_profile"
@@ -27,5 +28,6 @@ object ApiEndPoints{
     const val UPLOAD_PROFILE_PICTURE = "wallpaper/profile/upload_profile_picture"
     const val UPDATE_PROFILE_PICTURE = "wallpaper/profile/update_profile_picture"
     const val UPDATE_PROFILE_DESC = "wallpaper/profile/update_profile_desc"
+    const val PHOTO_PROFILE = "wallpaper/photo_profile"
 
 }

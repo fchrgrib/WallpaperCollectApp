@@ -27,7 +27,7 @@ class Profile @Inject constructor(
     val photoProfileUploadStatus = _photoProfileUploadStatus
     val photoProfileUpdateStatus = _photoProfileUpdateStatus
     val descProfileUpdateStatus = _descProfileUpdateStatus
-    val isUploadPhotoProfileCompleted = MutableStateFlow(false)
+    val isUploadPhotoProfileCompleted = MutableStateFlow(true)
     val isUpdateProfileDescCompleted = MutableStateFlow(false)
 
 

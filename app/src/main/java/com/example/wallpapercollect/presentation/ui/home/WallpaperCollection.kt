@@ -85,7 +85,7 @@ fun WallpaperCollectionScreen(
     var imagePart by rememberSaveable {mutableStateOf<MultipartBody.Part?>(null)}
 
     val isLoading = wallpaperCollect.isLoading.collectAsState(false).value
-    val isUploadCompleted = wallpaperCollect.isUploadCompleted.collectAsState(false).value
+    val isUploadCompleted = wallpaperCollect.isUploadCompleted.collectAsState(true).value
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
@@ -235,8 +235,11 @@ fun WallpaperCollectionScreen(
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = {
-                                val intent = Intent().setType("image/*").setAction(Intent.ACTION_GET_CONTENT)
-                                launcher.launch(intent)
+                                if(isUploadCompleted) {
+                                    val intent = Intent().setType("image/*")
+                                        .setAction(Intent.ACTION_GET_CONTENT)
+                                    launcher.launch(intent)
+                                }
                               },
                     shape = CircleShape,
                     contentColor = Color.White,

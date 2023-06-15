@@ -123,11 +123,11 @@ fun TextFieldProfile(
         mutableStateOf(firstContent)
     }
 
+    content(text)
     TextField(
         value = text,
         onValueChange = {
             text = it
-            content(text)
         },
         modifier = Modifier
             .fillMaxWidth()
@@ -149,6 +149,7 @@ fun TextFieldProfile(
             unfocusedIndicatorColor = Color.Transparent,
             disabledTextColor = gray200
         ),
-        shape = RoundedCornerShape(10.dp)
+        shape = RoundedCornerShape(10.dp),
+        label = { Text(text = placeHolder)}
     )
 }
