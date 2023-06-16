@@ -34,7 +34,7 @@ class Login @Inject constructor(
                 val response = wallpaperCollectRepoImpl.userLogin(userLogin)
                 _loginEmailDefault.emit(response)
             }catch (e :Exception){
-                _loginEmailDefault.emit(Status(e.message.toString()))
+                _loginEmailDefault.emit(Status(e.localizedMessage?:""))
             }
         }
     }
@@ -46,7 +46,7 @@ class Login @Inject constructor(
                 val response = wallpaperCollectRepoImpl.userGoogleLogin(token)
                 _loginGoogleSession.emit(response)
             }catch (e :Exception){
-                _loginGoogleSession.emit(Status(e.message.toString()))
+                _loginGoogleSession.emit(Status(e.localizedMessage?:""))
             }
             isGoogleLoginCompleted.emit(true)
         }
@@ -58,7 +58,7 @@ class Login @Inject constructor(
                 val response = wallpaperCollectRepoImpl.userFacebookLogin()
                 _loginFacebookSession.emit(response)
             }catch (e : Exception){
-                _loginFacebookSession.emit(Url("",e.message.toString()))
+                _loginFacebookSession.emit(Url("",e.localizedMessage?:""))
             }
         }
     }

@@ -43,7 +43,7 @@ fun WallpaperCollectAppNavHost(
             RegisterEmailScreen(navController = navController, gsc = gsc)
         }
         composable(NavigationRouters.PROFILE){
-            ScreenProfile(navController = navController)
+            ScreenProfile(navController = navController,gsc=gsc)
         }
         composable(NavigationRouters.WALLPAPER+"/{id}/{name}"){
              DownloadScreen(

@@ -41,7 +41,7 @@ class WallpaperCollectUser @Inject constructor(
                 val response = wallpaperCollectRepoImpl.wallpaperCollection()
                 _wallpaperCollection.emit(response)
             }catch (e :Exception){
-                _wallpaperCollection.emit(ImagesCollections(ArrayList(),e.message.toString()))
+                _wallpaperCollection.emit(ImagesCollections(ArrayList(),e.localizedMessage?:""))
             }
             _isLoading.value = false
         }
@@ -54,7 +54,7 @@ class WallpaperCollectUser @Inject constructor(
                 val response = wallpaperCollectRepoImpl.wallpaperUpload(image)
                 _wallpaperUploadStatus.emit(response)
             } catch (e :Exception){
-                _wallpaperUploadStatus.emit(Status(e.message.toString()))
+                _wallpaperUploadStatus.emit(Status(e.localizedMessage?:""))
             }
             _isUploadCompleted.value = true
         }
@@ -66,7 +66,7 @@ class WallpaperCollectUser @Inject constructor(
                 val response = wallpaperCollectRepoImpl.deleteImage(id)
                 _wallpaperDeleteStatus.emit(response)
             } catch (e :Exception){
-                _wallpaperDeleteStatus.emit(Status(e.message.toString()))
+                _wallpaperDeleteStatus.emit(Status(e.localizedMessage?:""))
             }
         }
     }

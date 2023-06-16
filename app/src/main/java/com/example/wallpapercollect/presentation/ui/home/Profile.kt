@@ -64,6 +64,7 @@ import com.example.wallpapercollect.presentation.ui.utils.getFileFromUri
 import com.example.wallpapercollect.presentation.ui.utils.isFirstTimeUserToProfile
 import com.example.wallpapercollect.presentation.ui.utils.manipulateActivityUserToProfile
 import com.example.wallpapercollect.presentation.viewmodel.profile.Profile
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -73,6 +74,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 @Composable
 fun ScreenProfile(
     navController: NavController,
+    gsc: GoogleSignInClient,
     profile: Profile = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -115,6 +117,7 @@ fun ScreenProfile(
             location = "Indonesian",
             isAuthor = false,
             profile = profile,
+            gsc = gsc,
             navController = navController
         ) }
     )
@@ -130,6 +133,7 @@ fun ProfileBody(
     location: String,
     isAuthor :Boolean,
     profile: Profile = hiltViewModel(),
+    gsc:GoogleSignInClient,
     navController: NavController
 ) {
     val context = LocalContext.current
@@ -273,6 +277,7 @@ fun ProfileBody(
         isRequestCalledForDelete = false
         Toast.makeText(context,"your account deleted successfully",Toast.LENGTH_LONG).show()
         CookieManager.getInstance().removeAllCookie()
+        gsc.signOut()
 
         navController.navigate(NavigationRouters.LOGIN){
             popUpTo(NavigationRouters.PROFILE){inclusive = true}

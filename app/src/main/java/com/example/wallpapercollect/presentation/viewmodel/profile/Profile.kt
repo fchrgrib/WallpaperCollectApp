@@ -42,7 +42,7 @@ class Profile @Inject constructor(
                 val response = wallpaperCollectRepoImpl.profile()
                 _profileInfo.emit(response)
             }catch (e :Exception){
-                _profileInfo.emit(UserDescription("","","","",e.message.toString()))
+                _profileInfo.emit(UserDescription("","","","",e.localizedMessage?:""))
             }
         }
     }
@@ -54,7 +54,7 @@ class Profile @Inject constructor(
                 val response = wallpaperCollectRepoImpl.deleteUser()
                 _userDeleteStatus.emit(response)
             }catch (e:Exception){
-                _userDeleteStatus.emit(Status(e.message.toString()))
+                _userDeleteStatus.emit(Status(e.localizedMessage?:""))
             }
             isUserDelete.value = true
         }
@@ -67,7 +67,7 @@ class Profile @Inject constructor(
                 val response = wallpaperCollectRepoImpl.profilePictureUpload(image)
                 _photoProfileUploadStatus.emit(response)
             }catch (e :Exception){
-                _photoProfileUploadStatus.emit(Status(e.message.toString()))
+                _photoProfileUploadStatus.emit(Status(e.localizedMessage?:""))
             }
             isUploadPhotoProfileCompleted.emit(true)
         }
@@ -80,7 +80,7 @@ class Profile @Inject constructor(
                 val response = wallpaperCollectRepoImpl.profilePictureUpdate(image)
                 _photoProfileUpdateStatus.emit(response)
             }catch (e :Exception){
-                _photoProfileUpdateStatus.emit(Status(e.message.toString()))
+                _photoProfileUpdateStatus.emit(Status(e.localizedMessage?:""))
             }
             isUploadPhotoProfileCompleted.emit(true)
         }
@@ -93,7 +93,7 @@ class Profile @Inject constructor(
                 val response = wallpaperCollectRepoImpl.updateProfileDesc(userUpdate)
                 _descProfileUpdateStatus.emit(response)
             }catch (e:Exception){
-                _descProfileUpdateStatus.emit(Status(e.message.toString()))
+                _descProfileUpdateStatus.emit(Status(e.localizedMessage?:""))
             }
             isUpdateProfileDescCompleted.emit(true)
         }

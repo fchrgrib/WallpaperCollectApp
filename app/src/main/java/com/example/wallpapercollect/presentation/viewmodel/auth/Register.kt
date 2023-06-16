@@ -33,7 +33,7 @@ class Register @Inject constructor(
                 val response = wallpaperCollectRepoImpl.userRegister(userRegister)
                 _registerEmailDefaultStatus.emit(response)
             }catch (e: Exception){
-                _registerEmailDefaultStatus.emit(Status(e.message.toString()))
+                _registerEmailDefaultStatus.emit(Status(e.localizedMessage?:""))
             }
         }
     }
@@ -55,7 +55,7 @@ class Register @Inject constructor(
                 val response = wallpaperCollectRepoImpl.userFacebookRegister()
                 _registerFacebookSession.emit(response)
             }catch (e :Exception){
-                _registerFacebookSession.emit(Url("",e.message.toString()))
+                _registerFacebookSession.emit(Url("",e.localizedMessage?:""))
             }
         }
     }
