@@ -357,11 +357,11 @@ fun BottomPartOfProfile(
     ) {
         
         if (isEditButtonClicked){
-            TextFieldProfile(placeHolder = "User Name", content = {userNameContent(it)}, firstContent = userName)
+            TextFieldProfile(label = "User Name", content = {userNameContent(it)}, firstContent = userName)
             Spacer(modifier = Modifier.padding(top = 16.dp))
-            TextFieldProfile(placeHolder = "Phone", content = {phoneNumberContent(it)}, firstContent = phoneNumber)
+            TextFieldProfile(label = "Phone", content = {phoneNumberContent(it)}, firstContent = phoneNumber)
             Spacer(modifier = Modifier.padding(top = 16.dp))
-            TextFieldProfile(placeHolder = "Email", content = {emailContent(it)}, firstContent = email)
+            TextFieldProfile(label = "Email", content = {emailContent(it)}, firstContent = email)
         }else {
             BoxContent(startText = "Phone", endText = phoneNumber)
             BoxContent(startText = "Email", endText = email)

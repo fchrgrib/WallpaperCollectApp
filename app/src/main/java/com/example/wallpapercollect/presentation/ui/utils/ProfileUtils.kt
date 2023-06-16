@@ -30,10 +30,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.wallpapercollect.R
+import com.example.wallpapercollect.presentation.ui.theme.brand500
 import com.example.wallpapercollect.presentation.ui.theme.gray10
-import com.example.wallpapercollect.presentation.ui.theme.gray100
 import com.example.wallpapercollect.presentation.ui.theme.gray200
-import com.example.wallpapercollect.presentation.ui.theme.interFont
 
 @Composable
 fun BoxContent(startText :String, endText:String) {
@@ -113,9 +112,9 @@ fun PhotoProfileCustom(
 
 @Composable
 fun TextFieldProfile(
-     placeHolder:String,
-     content : (String) -> Unit,
-     firstContent:String
+    label:String,
+    content : (String) -> Unit,
+    firstContent:String
 ) {
     var text by rememberSaveable {
         mutableStateOf(firstContent)
@@ -131,23 +130,15 @@ fun TextFieldProfile(
             .fillMaxWidth()
             .height(56.dp)
             .border(1.dp, gray10, RoundedCornerShape(10.dp)),
-        placeholder = {
-            Text(
-                text = placeHolder,
-                fontFamily = interFont,
-                fontWeight = FontWeight.Normal,
-                color = gray100,
-                fontSize = 12.sp
-            )
-        },
         singleLine = true,
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = Color(0xFFF7F8F9),
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            disabledTextColor = gray200
+            disabledTextColor = gray200,
+            focusedLabelColor = brand500
         ),
         shape = RoundedCornerShape(10.dp),
-        label = { Text(text = placeHolder)}
+        label = { Text(text = label)}
     )
 }
